@@ -2,22 +2,21 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDb from "./config/MongoDb.js";
 import products from "./data/Products.js";
+import ImportData from "./DataImport.js";
+import productRoute from "./Routes/ProductRoutes.js";
+import { errorHandler, notFound } from "./Middleware/Errors.js";
 
 dotenv.config();
 await connectDb();
 
-const PORT = process.env.PORT || 3001;
 const app = express();
 
-app.get("/api/products", (req, res) => {
-    res.json(products);
-});
+app.use("/api/import", ImportData);
+app.use("/api/products", productRoute);
+app.use(notFound);
+app.use(errorHandler);
 
-app.get("/api/products/:id", (req, res) => {
-    const product = products.find((p) => p._id === req.params.id);
-    res.json(product);
-});
-
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
     console.log(`server is running at port ${PORT}`);
