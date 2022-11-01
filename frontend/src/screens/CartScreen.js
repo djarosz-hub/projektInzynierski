@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Header from "./../components/Header";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from './../Redux/Actions/CartActions';
+import { addToCart, removeFromCart } from './../Redux/Actions/CartActions';
 
 const CartScreen = ({ match, location, history }) => {
     window.scrollTo(0, 0);
@@ -26,8 +26,8 @@ const CartScreen = ({ match, location, history }) => {
         history.push("/login?redirect=shipping");
     }
 
-    const removeFromCartHandler = (e) => {
-        //todo
+    const removeFromCartHandler = (id) => {
+        dispatch(removeFromCart(id))
     }
 
     return (
@@ -59,9 +59,9 @@ const CartScreen = ({ match, location, history }) => {
                             </div>
                             {
                                 cartItems.map((item) => (
-                                    <div className="cart-iterm row">
+                                    <div className="cart-iterm row" key={item.product}>
                                         <div 
-                                        onClick={removeFromCartHandler}
+                                        onClick={() => removeFromCartHandler(item.product)}
                                         className="remove-button d-flex justify-content-center align-items-center">
                                             <i className="fas fa-times"></i>
                                         </div>
