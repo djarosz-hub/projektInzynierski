@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./../components/Header";
 import Rating from "../components/homeComponents/Rating";
 import { Link } from "react-router-dom";
@@ -7,7 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { listProductDetails } from "../Redux/Actions/ProductActions";
 import Loading from './../components/LoadingError/Loading';
 
-const SingleProduct = ({ match }) => {
+const SingleProduct = ({ history, match }) => {
+    const [qty, setQty] = useState(1);
 
     const dispatch = useDispatch();
     const productId = match.params.id;
@@ -18,6 +19,11 @@ const SingleProduct = ({ match }) => {
     useEffect(() => {
         dispatch(listProductDetails(productId));
     }, [dispatch, productId])
+
+    const AddToCart = (e) => {
+        e.preventDefault();
+        history.push(`/cart/${productId}?qty=${qty}`);
+    }
 
     return (
         <>
@@ -67,7 +73,7 @@ const SingleProduct = ({ match }) => {
                                                 <>
                                                     <div className="flex-box d-flex justify-content-between align-items-center">
                                                         <h6>Quantity</h6>
-                                                        <select>
+                                                        <select value={qty} onChange={(e) => setQty(e.target.value)}>
                                                             {[...Array(product.countInStock).keys()].map((x) => (
                                                                 <option key={x + 1} value={x + 1}>
                                                                     {x + 1}
@@ -75,7 +81,7 @@ const SingleProduct = ({ match }) => {
                                                             ))}
                                                         </select>
                                                     </div>
-                                                    <button className="round-black-btn">Add To Cart</button>
+                                                    <button onClick={AddToCart} className="round-black-btn">Add To Cart</button>
                                                 </>
                                             ) : null}
                                         </div>
