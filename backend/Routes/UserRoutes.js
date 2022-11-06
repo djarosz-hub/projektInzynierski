@@ -1,6 +1,7 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import User from '../Models/UserModel.js';
+import generateToken from '../utils/generateToken.js';
 
 const userRoute = express.Router();
 
@@ -14,7 +15,7 @@ userRoute.post("/login", asyncHandler(async (req, res) => {
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
-            token: null,
+            token: generateToken(user._id),
             createdAt: user.createdAt,
         })
     } else {
