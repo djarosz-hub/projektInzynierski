@@ -5,14 +5,20 @@ import products from "./data/Products.js";
 import ImportData from "./DataImport.js";
 import productRoute from "./Routes/ProductRoutes.js";
 import { errorHandler, notFound } from "./Middleware/Errors.js";
+import userRoute from "./Routes/UserRoutes.js";
 
 dotenv.config();
 await connectDb();
 
 const app = express();
+app.use(express.json());
 
 app.use("/api/import", ImportData);
 app.use("/api/products", productRoute);
+app.use("/api/users", userRoute);
+
+
+//error handlers
 app.use(notFound);
 app.use(errorHandler);
 
