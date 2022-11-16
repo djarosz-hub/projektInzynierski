@@ -1,4 +1,4 @@
-import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL } from './../Constants/UserConstants';
+import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT } from './../Constants/UserConstants';
 import axios from 'axios';
 
 export const login = (email, password) => async (dispatch) => {
@@ -10,7 +10,7 @@ export const login = (email, password) => async (dispatch) => {
                 "Content-Type": "application/json",
             }
         }
-        
+
         const { data } = await axios.post(`/api/users/login`, { email, password }, config);
 
         dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
@@ -23,3 +23,9 @@ export const login = (email, password) => async (dispatch) => {
         })
     }
 }
+
+export const logout = () => (dispatch) => {
+    localStorage.removeItem("userInfo");
+    dispatch({ type: USER_LOGOUT });
+    document.location.href="/login";
+};
