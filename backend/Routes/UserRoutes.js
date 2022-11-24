@@ -29,7 +29,7 @@ userRoute.post("/", asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
     const userExists = await User.findOne({ email });
 
-    if (userExists && (!name || !email || !password)) {
+    if (userExists || (!name || !email || !password)) {
         res.status(400);
         throw new Error("User already exists or data is invalid");
     }
