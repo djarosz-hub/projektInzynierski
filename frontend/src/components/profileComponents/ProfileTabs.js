@@ -4,6 +4,7 @@ import Toast from './../LoadingError/Toast';
 import Message from './../LoadingError/Error';
 import Loading from './../LoadingError/Loading';
 import { toast } from "react-toastify";
+import { updateProfile } from "../../Redux/Actions/UserActions";
 
 const ProfileTabs = () => {
 
@@ -17,13 +18,16 @@ const ProfileTabs = () => {
         pauseOnFocusLoss: false,
         draggable: false,
         pauseOnHover: false,
-        autoClose: 3000,
+        autoClose: 2000,
     }
 
     const dispatch = useDispatch();
 
     const userDetails = useSelector((state) => state.userDetails);
     const { loading, error, user } = userDetails;
+
+    const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
+    const { loading: updateLoading } = userUpdateProfile;
 
     useEffect(() => {
         if (user) {
@@ -35,9 +39,14 @@ const ProfileTabs = () => {
     const submitHandler = (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            toastId.current = toast.error("Passwords are not matching", ToastObjects);
+            if (!toast.isActive(toastId.current)) {
+                toastId.current = toast.error("Passwords are not matching", ToastObjects);
+            }
         } else {
-            alert('git')
+            dispatch(updateProfile({ id: user._id, name, email, password }))
+            if (!toast.isActive(toastId.current)) {
+                toastId.current = toast.success("Profile updated successfully", ToastObjects);
+            }
         }
     };
 
@@ -46,6 +55,7 @@ const ProfileTabs = () => {
             <Toast />
             {error && <Message variant="alert-danger">{error}</Message>}
             {loading && <Loading />}
+            {updateLoading && <Loading />}
             <form className="row  form-container" onSubmit={submitHandler}>
                 <div className="col-md-6">
                     <div className="form">
