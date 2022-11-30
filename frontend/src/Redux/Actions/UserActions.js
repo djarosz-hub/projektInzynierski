@@ -107,11 +107,11 @@ export const updateProfile = (user) => async (dispatch, getState) => {
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         if (message === "Not authorized, token invalid") {
-            dispatch(logout())
+            dispatch(logout());
         }
         dispatch({
             type: USER_UPDATE_PROFILE_FAIL,
             payload: message,
-        })
+        });
     }
 };
