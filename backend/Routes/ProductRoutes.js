@@ -6,7 +6,15 @@ import protect from './../Middleware/Auth.js';
 const productRoute = express.Router();
 
 productRoute.get("/", asyncHandler(async (req, res) => {
-    const products = await Product.find({});
+    //todo
+    const keyword = req.query.keyword ? {
+        name: {
+            $regex: req.query.keyword,
+            $options: "i"
+        }
+    } : {};
+
+    const products = await Product.find({ ...keyword });
     res.json(products)
 }));
 
