@@ -23,6 +23,12 @@ orderRoute.post("/", protect, asyncHandler(async (req, res) => {
     }
 }));
 
+orderRoute.get("/", protect, asyncHandler(async (req, res) => {
+
+    const userOrders = await Order.find({ user: req.user._id }).sort({ _id: -1 });
+    res.json(userOrders);
+}));
+
 orderRoute.get("/:id", protect, asyncHandler(async (req, res) => {
 
     const order = await Order.findById(req.params.id).populate(

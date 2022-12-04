@@ -1,4 +1,5 @@
-import { ORDER_CREATE_FAIL, ORDER_CREATE_REQUEST, ORDER_CREATE_RESET, ORDER_CREATE_SUCCESS, ORDER_DETAILS_FAIL, ORDER_DETAILS_REQUEST, ORDER_DETAILS_SUCCESS, ORDER_PAYMENT_FAIL, ORDER_PAYMENT_REQUEST, ORDER_PAYMENT_RESET, ORDER_PAYMENT_SUCCESS } from "../Constants/OrderConstants";
+import { ORDER_CREATE_FAIL, ORDER_CREATE_REQUEST, ORDER_CREATE_RESET, ORDER_CREATE_SUCCESS, ORDER_DETAILS_FAIL, ORDER_DETAILS_REQUEST, ORDER_DETAILS_SUCCESS, ORDER_PAYMENT_FAIL, ORDER_PAYMENT_REQUEST, ORDER_PAYMENT_RESET, ORDER_PAYMENT_SUCCESS, ORDER_USER_LIST_FAIL, ORDER_USER_LIST_REQUEST } from "../Constants/OrderConstants";
+import { ORDER_USER_LIST_SUCCESS, ORDER_USER_LIST_RESET } from './../Constants/OrderConstants';
 
 export const orderCreateReducer = (state = {}, action) => {
     switch (action.type) {
@@ -51,6 +52,26 @@ export const orderPaymentReducer = (state = {}, action) => {
 
         case ORDER_PAYMENT_RESET:
             return {};
+
+        default:
+            return state;
+    }
+}
+
+export const orderUserListReducer = (state = { orders: [] }, action) => {
+    switch (action.type) {
+
+        case ORDER_USER_LIST_REQUEST:
+            return { loading: true };
+
+        case ORDER_USER_LIST_SUCCESS:
+            return { loading: false, orders: action.payload };
+
+        case ORDER_USER_LIST_FAIL:
+            return { loading: false, error: action.payload };
+
+        case ORDER_USER_LIST_RESET:
+            return { orders: [] };
 
         default:
             return state;
