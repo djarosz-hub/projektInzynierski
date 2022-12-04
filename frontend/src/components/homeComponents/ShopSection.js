@@ -10,16 +10,16 @@ import Message from "../LoadingError/Error";
 
 const ShopSection = (props) => {
 
-    const { keyword } = props;
+    const { keyword, pageNumber } = props;
 
     const dispatch = useDispatch();
 
     const productList = useSelector((state) => state.productList);
-    const { loading, error, products } = productList;
+    const { loading, error, products, page, pages } = productList;
 
     useEffect(() => {
-        dispatch(listProduct(keyword))
-    }, [dispatch, keyword])
+        dispatch(listProduct(keyword, pageNumber))
+    }, [dispatch, keyword, pageNumber])
 
     return (
         <>
@@ -68,8 +68,7 @@ const ShopSection = (props) => {
                                         </>
                                     )
                                 }
-                                {/* Pagination */}
-                                <Pagination />
+                                <Pagination pages={pages} page={page} keyword={keyword ? keyword : ""} />
                             </div>
                         </div>
                     </div>
