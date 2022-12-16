@@ -1,6 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import protect from '../Middleware/Auth.js';
+import protect, { adminAccess } from '../Middleware/Auth.js';
 import User from '../Models/UserModel.js';
 import generateToken from '../utils/generateToken.js';
 
@@ -98,5 +98,10 @@ userRoute.put("/profile",
         }
     })
 );
+
+userRoute.get("/", protect, adminAccess, asyncHandler(async (req, res) => {
+    const users = await User.find({});
+    res.json(users);
+}))
 
 export default userRoute;
