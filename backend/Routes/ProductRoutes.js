@@ -1,7 +1,7 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import Product from '../Models/ProductModel.js';
-import protect from './../Middleware/Auth.js';
+import protect, { adminAccess } from './../Middleware/Auth.js';
 
 const productRoute = express.Router();
 
@@ -23,6 +23,13 @@ productRoute.get("/", asyncHandler(async (req, res) => {
 
     res.json({ products, page, pages: Math.ceil(count / pageSize) });
 }));
+
+// admin get all products
+productRoute.get("/all", protect, adminAccess, asyncHandler(async (req, res) => {
+    const products = await Product.find({}).sort({ _id: -1 });
+    res.json(products);
+}));
+
 
 productRoute.get("/:id", asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
