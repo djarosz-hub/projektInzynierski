@@ -86,4 +86,50 @@ productRoute.delete("/:id", protect, adminAccess, asyncHandler(async (req, res) 
 
 }));
 
+productRoute.post("/", protect, adminAccess, asyncHandler(async (req, res) => {
+    const { name, price, description, image, countInStock } = req.body;
+    const productExists = await Product.findOne({ name });
+
+    if (productExists) {
+        res.status(400);
+        throw new Error("Product with this name already exists.");
+    } else {
+        const product = new Product({
+            name,
+            price,
+            description,
+            image,
+            countInStock,
+            user: req.user._id
+        });
+
+        if (product) {
+            const createdProduct = await product.save();
+            res.status(201).json(createdProduct);
+        } else {
+            res.status(400);
+            throw new Error("Product creation failed.");
+        }
+    }
+}));
+
+productRoute.put("/:id", protect, adminAccess, asyncHandler(async (req, res) => {
+    const { name, price, description, image, countInStock } = req.body;
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+        product.name = name || product.name;
+        product.price = price || product.price;
+        product.description = description || product.description;
+        product.image = image || product.image;
+        product.countInStock = countInStock || product.countInStock;
+
+        const updatedProduct = await product.save();
+        res.status(200).json(updatedProduct);
+    } else {
+        res.status(404);
+        throw new Error("Invalid product.");
+    }
+}));
+
 export default productRoute;
