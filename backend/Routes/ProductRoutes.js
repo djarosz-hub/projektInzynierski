@@ -74,4 +74,16 @@ productRoute.post("/:id/review", protect, asyncHandler(async (req, res) => {
 
 }));
 
+productRoute.delete("/:id", protect, adminAccess, asyncHandler(async (req, res) => {
+    const product = await Product.findById(req.params.id);
+    if (product) {
+        await product.remove();
+        res.json({ message: "Product deleted." });
+    } else {
+        res.status(404);
+        throw new Error("Product not Found.");
+    }
+
+}));
+
 export default productRoute;

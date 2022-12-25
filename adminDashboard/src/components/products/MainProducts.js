@@ -13,9 +13,12 @@ const MainProducts = () => {
     const productList = useSelector((state) => state.productList);
     const { loading, error, products } = productList;
 
+    const productDelete = useSelector((state) => state.productDelete);
+    const { error: errorDelete, success: successDelete } = productDelete;
+
     useEffect(() => {
         dispatch(listProducts());
-    }, [dispatch]);
+    }, [dispatch, successDelete]);
 
     return (
         <section className="content-main">
@@ -57,6 +60,8 @@ const MainProducts = () => {
                 </header>
 
                 <div className="card-body">
+                    {errorDelete && (<Message variant="alert-danger">{errorDelete}</Message>)}
+
                     {
                         loading ? (
                             <Loading />
