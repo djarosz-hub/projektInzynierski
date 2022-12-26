@@ -1,6 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import protect from '../Middleware/Auth.js';
+import protect, { adminAccess } from '../Middleware/Auth.js';
 import Order from './../Models/OrderModel.js';
 
 const orderRoute = express.Router();
@@ -24,9 +24,13 @@ orderRoute.post("/", protect, asyncHandler(async (req, res) => {
 }));
 
 orderRoute.get("/", protect, asyncHandler(async (req, res) => {
-
     const userOrders = await Order.find({ user: req.user._id }).sort({ _id: -1 });
     res.json(userOrders);
+}));
+
+orderRoute.get("/all", protect, adminAccess, asyncHandler(async (req, res) => {
+    const orders = await Order.find({}).sort({ _id: -1 }).populate("user", "id name email");
+    res.json(orders);
 }));
 
 orderRoute.get("/:id", protect, asyncHandler(async (req, res) => {
