@@ -114,7 +114,8 @@ productRoute.post("/", protect, adminAccess, asyncHandler(async (req, res) => {
 }));
 
 productRoute.put("/:id", protect, adminAccess, asyncHandler(async (req, res) => {
-    const { name, price, description, image, countInStock } = req.body;
+    const { name, price, description, image, countInStock } = req.body.product;
+    //todo walidacja name
     const product = await Product.findById(req.params.id);
 
     if (product) {
