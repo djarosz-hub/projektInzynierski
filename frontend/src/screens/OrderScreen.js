@@ -93,7 +93,6 @@ const OrderScreen = ({ match }) => {
                                         </div>
                                     </div>
                                 </div>
-                                {/* 2 */}
                                 <div className="col-lg-4 col-sm-4 mb-lg-4 mb-5 mb-sm-0">
                                     <div className="row">
                                         <div className="col-md-4 center">
@@ -125,7 +124,6 @@ const OrderScreen = ({ match }) => {
                                         </div>
                                     </div>
                                 </div>
-                                {/* 3 */}
                                 <div className="col-lg-4 col-sm-4 mb-lg-4 mb-5 mb-sm-0">
                                     <div className="row">
                                         <div className="col-md-4 center">
@@ -193,7 +191,6 @@ const OrderScreen = ({ match }) => {
                                         )
                                     }
                                 </div>
-                                {/* total */}
                                 <div className="col-lg-3 d-flex align-items-end flex-column mt-5 subtotal-order">
                                     <table className="table table-bordered">
                                         <tbody>

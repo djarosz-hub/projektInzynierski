@@ -32,7 +32,6 @@ const Header = () => {
 
     return (
         <div>
-            {/* Top Header */}
             <div className="Announcement ">
                 <div className="container">
                     <div className="row">

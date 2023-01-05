@@ -2,7 +2,7 @@ import React from "react";
 import Message from "../LoadingError/Error";
 import Loading from "../LoadingError/Loading";
 import { Link } from 'react-router-dom';
-import  moment from 'moment';
+import moment from 'moment';
 const Orders = (props) => {
 
     const { orders, loading, error } = props;

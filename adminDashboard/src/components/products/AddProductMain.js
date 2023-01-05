@@ -131,7 +131,6 @@ const AddProductMain = () => {
                                             value={image}
                                             onChange={(e) => setImage(e.target.value)}
                                         />
-                                        {/* <input className="form-control mt-3" type="file" /> */}
                                     </div>
                                 </div>
                             </div>

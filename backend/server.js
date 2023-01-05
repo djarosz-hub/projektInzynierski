@@ -1,7 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
 import connectDb from "./config/MongoDb.js";
-import products from "./data/Products.js";
 import ImportData from "./DataImport.js";
 import productRoute from "./Routes/ProductRoutes.js";
 import { errorHandler, notFound } from "./Middleware/Errors.js";

@@ -33,7 +33,6 @@ const CartScreen = ({ match, location, history }) => {
     return (
         <>
             <Header />
-            {/* Cart */}
             <div className="container">
                 {
                     cartItems.length === 0 ? (
@@ -60,9 +59,9 @@ const CartScreen = ({ match, location, history }) => {
                             {
                                 cartItems.map((item) => (
                                     <div className="cart-iterm row" key={item.product}>
-                                        <div 
-                                        onClick={() => removeFromCartHandler(item.product)}
-                                        className="remove-button d-flex justify-content-center align-items-center">
+                                        <div
+                                            onClick={() => removeFromCartHandler(item.product)}
+                                            className="remove-button d-flex justify-content-center align-items-center">
                                             <i className="fas fa-times"></i>
                                         </div>
                                         <div className="cart-image col-md-3">
@@ -91,8 +90,6 @@ const CartScreen = ({ match, location, history }) => {
                                 ))
                             }
 
-
-                            {/* End of cart iterms */}
                             <div className="total">
                                 <span className="sub">total:</span>
                                 <span className="total-price">{totalPrice}</span>

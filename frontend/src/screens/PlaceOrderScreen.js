@@ -37,6 +37,7 @@ const PlaceOrderScreen = ({ history }) => {
     }, [dispatch, success, order, history]);
 
     const placeOrderHandler = (e) => {
+        //todo sprawdzic
         // e.preventDefault();
         dispatch(createOrder({
             orderItems: cart.cartItems,
@@ -69,7 +70,6 @@ const PlaceOrderScreen = ({ history }) => {
                             </div>
                         </div>
                     </div>
-                    {/* 2 */}
                     <div className="col-lg-4 col-sm-4 mb-lg-4 mb-5 mb-sm-0">
                         <div className="row">
                             <div className="col-md-4 center">
@@ -86,7 +86,6 @@ const PlaceOrderScreen = ({ history }) => {
                             </div>
                         </div>
                     </div>
-                    {/* 3 */}
                     <div className="col-lg-4 col-sm-4 mb-lg-4 mb-5 mb-sm-0">
                         <div className="row">
                             <div className="col-md-4 center">
@@ -140,7 +139,6 @@ const PlaceOrderScreen = ({ history }) => {
                         }
 
                     </div>
-                    {/* total */}
                     <div className="col-lg-3 d-flex align-items-end flex-column mt-5 subtotal-order">
                         <table className="table table-bordered">
                             <tbody>
@@ -156,12 +154,6 @@ const PlaceOrderScreen = ({ history }) => {
                                     </td>
                                     <td>${cart.shippingPrice}</td>
                                 </tr>
-                                {/* <tr>
-                                    <td>
-                                        <strong>Tax</strong>
-                                    </td>
-                                    <td>${cart.taxPrice}</td>
-                                </tr> */}
                                 <tr>
                                     <td>
                                         <strong>Total</strong>

@@ -19,16 +19,11 @@ const Main = () => {
                 <div className="content-header">
                     <h2 className="content-title"> Dashboard </h2>
                 </div>
-                {/* Top Total */}
                 <TopTotal orders={orders} products={products} />
-
                 <div className="row">
-                    {/* STATICS */}
                     <SaleStatistics />
                     <ProductsStatistics />
                 </div>
-
-                {/* LATEST ORDER */}
                 <div className="card mb-4 shadow-sm">
                     <LatestOrder orders={orders} loading={loading} error={error} />
                 </div>

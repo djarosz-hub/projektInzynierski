@@ -55,7 +55,6 @@ const UserComponent = () => {
                     </div>
                 </header>
 
-                {/* Card */}
                 <div className="card-body">
                     {
                         loading ? (
@@ -92,7 +91,6 @@ const UserComponent = () => {
                         )
                     }
 
-                    {/* nav */}
                     {/* TODO */}
                     <nav className="float-end mt-4" aria-label="Page navigation">
                         <ul className="pagination">

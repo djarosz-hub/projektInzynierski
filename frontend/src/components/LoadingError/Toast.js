@@ -11,7 +11,6 @@ const Toast = () => {
                 closeOnClick
                 rtl={false}
             />
-            {/* Same as */}
             <ToastContainer />
         </div>
     );

@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { createProductReview, listProductDetails } from "../Redux/Actions/ProductActions";
 import Loading from './../components/LoadingError/Loading';
 import { PRODUCT_CREATE_REVIEW_RESET } from "../Redux/Constants/ProductConstants";
-import moment from 'moment';
 
 const SingleProduct = ({ history, match }) => {
     const [qty, setQty] = useState(1);
@@ -29,7 +28,6 @@ const SingleProduct = ({ history, match }) => {
     useEffect(() => {
 
         if (successCreateReview) {
-            // alert("review submiteted");
             setRating(0);
             setComment("");
             dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
@@ -112,7 +110,6 @@ const SingleProduct = ({ history, match }) => {
                                 </div>
                             </div>
 
-                            {/* RATING */}
                             <div className="row my-5">
                                 <div className="col-md-6">
                                     <h6 className="mb-3">REVIEWS</h6>

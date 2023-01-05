@@ -1,7 +1,6 @@
 body {
   margin: 0;
   font-family: "Josefin Sans", sans-serif;
-  /* font-family: 'Open Sans', sans-serif; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 17px;
@@ -194,9 +193,7 @@ textarea:focus {
 .rating span {
   margin-left: 10px;
 }
-/* END OF SHOP */
 
-/* NEWSLATTER */
 .subscribe-section {
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.226), rgba(0, 0, 0, 0.226)),
     url("https://sasshoes-com.s3.us-west-2.amazonaws.com/img/banner-uplift-21.jpg")
@@ -243,6 +240,7 @@ textarea:focus {
   text-transform: uppercase;
   font-size: 12px;
 }
+
 /* CONTACT */
 .contactInfo {
   padding: 70px 0;
