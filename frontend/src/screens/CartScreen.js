@@ -92,7 +92,7 @@ const CartScreen = ({ match, location, history }) => {
 
                             <div className="total">
                                 <span className="sub">total:</span>
-                                <span className="total-price">{totalPrice}</span>
+                                <span className="total-price">${totalPrice}</span>
                             </div>
                             <hr />
                             <div className="cart-buttons d-flex align-items-center row">

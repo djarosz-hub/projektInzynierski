@@ -217,6 +217,9 @@ textarea:focus {
 .subscribe-head {
   text-align: center;
 }
+.form-section {
+    display: inline-flex;
+}
 .form-section input[type="email"] {
   border: 0 none;
   border-radius: 25px;
@@ -566,20 +569,6 @@ textarea:focus {
 .cart-buttons a:nth-child(1) button {
   background-color: #000000;
 }
-/* FOOTER */
-.footer {
-  background-color: #ececec;
-}
-.card-name {
-  width: 4%;
-  margin: 10px;
-}
-.card-name img {
-  width: 100%;
-  height: 50px;
-  object-fit: contain;
-}
-
 /* Payment */
 .payment-container {
   margin-top: 20px;

@@ -46,8 +46,14 @@
   .single-product {
     margin-top: 20px;
   }
+  .form-section {
+    display: inline-flex;
+  }
 }
 @media (max-width: 768px) {
+  .form-section {
+    display: block;
+  }
   .pc-header {
     display: none !important;
   }
@@ -73,10 +79,13 @@
   }
   .subscribe-head .form-section input[type="email"] {
     height: 45px;
-    width: 70%;
+    width: 100%;
   }
   .subscribe-head .form-section input[type="submit"] {
     height: 47px;
+    width: 100%;
+    margin-top: 20px;
+    margin-left: 0px;
     padding: 0 58px;
   }
   .subscribe-head h2 {

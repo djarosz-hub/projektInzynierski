@@ -12,6 +12,7 @@ const SingleProduct = ({ history, match }) => {
     const [qty, setQty] = useState(1);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
+    let errorCreateReviewInitial = "";
 
     const dispatch = useDispatch();
     const productId = match.params.id;
@@ -34,6 +35,11 @@ const SingleProduct = ({ history, match }) => {
         }
 
         dispatch(listProductDetails(productId));
+
+        return () => {
+            dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
+        }
+
     }, [dispatch, productId, successCreateReview])
 
     const AddToCart = (e) => {
@@ -87,7 +93,7 @@ const SingleProduct = ({ history, match }) => {
                                                 <h6>Reviews</h6>
                                                 <Rating
                                                     value={product.rating}
-                                                    text={`${product.numReviews} reviews`}
+                                                    text={product.reviews.length > 1 ? `${product.reviews.length} reviews` : `${product.reviews.length} review`}
                                                 />
                                             </div>
                                             {product.countInStock > 0 ? (
