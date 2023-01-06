@@ -46,27 +46,12 @@ const OrderDetailmain = (props) => {
                                 <div className="col-lg-6 col-md-6">
                                     <span>
                                         <i className="far fa-calendar-alt mx-2"></i>
-                                        <b className="text-white">{moment(order.createdAt).format("llll")}</b>
+                                        <b className="text-white">{moment(order.createdAt).calendar()}</b>
                                     </span>
                                     <br />
                                     <small className="text-white mx-3 ">
                                         Order ID: {order._id}
                                     </small>
-                                </div>
-                                <div className="col-lg-6 col-md-6 ms-auto d-flex justify-content-end align-items-center">
-                                    <select
-                                        className="form-select d-inline-block"
-                                        style={{ maxWidth: "200px" }}
-                                    >
-                                        <option>Change status</option>
-                                        <option>Awaiting payment</option>
-                                        <option>Confirmed</option>
-                                        <option>Shipped</option>
-                                        <option>Delivered</option>
-                                    </select>
-                                    <Link className="btn btn-success ms-2" to="#">
-                                        <i className="fas fa-print"></i>
-                                    </Link>
                                 </div>
                             </div>
                         </header>
@@ -85,8 +70,8 @@ const OrderDetailmain = (props) => {
                                     <div className="box shadow-sm bg-light">
                                         {
                                             order.isDelivered ? (
-                                                <button className="btn btn-success col-12">
-                                                    Delivered: {" "} {moment(order.deliveredAt).calendar()}
+                                                <button className="btn btn-success col-12" disabled>
+                                                    Delivered: {" "} {moment(order.deliveredAt).calendar('DD/MM/YYYY')}
                                                 </button>
                                             ) : (
                                                 <>

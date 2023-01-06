@@ -1,11 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import moment from 'moment';
 
 const Orders = (props) => {
 
     const { orders } = props;
+    let history = useHistory();
 
+    const showOrderHandler = (orderId) => {
+        history.push(`/order/${orderId}`);
+    };
     return (
         <table className="table">
             <thead>
@@ -15,16 +19,13 @@ const Orders = (props) => {
                     <th scope="col">Total</th>
                     <th scope="col">Paid</th>
                     <th scope="col">Date</th>
-                    <th>Status</th>
-                    <th scope="col" className="text-end">
-                        Action
-                    </th>
+                    <th scope="col">Status</th>
                 </tr>
             </thead>
             <tbody>
                 {
                     orders.map((order) => (
-                        <tr key={order._id}>
+                        <tr key={order._id} onClick={() => showOrderHandler(order._id)}>
                             <td>
                                 <b>{order.user.name}</b>
                             </td>
@@ -34,7 +35,7 @@ const Orders = (props) => {
                                 {
                                     order.isPaid ? (
                                         <span className="badge rounded-pill alert-success">
-                                            Paid at {moment(order.paidAt).format("MMM Do YY")}
+                                            Paid at {moment(order.paidAt).calendar()}
                                         </span>
                                     ) : (
                                         <span className="badge rounded-pill alert-danger">
@@ -43,7 +44,7 @@ const Orders = (props) => {
                                     )
                                 }
                             </td>
-                            <td>{moment(order.createdAt).format("MMM Do YY")}</td>
+                            <td>{moment(order.createdAt).calendar()}</td>
                             <td>
                                 {
                                     order.isDelivered ? (
@@ -52,11 +53,6 @@ const Orders = (props) => {
                                         <span className="badge btn-dark">Not delivered</span>
                                     )
                                 }
-                            </td>
-                            <td className="d-flex justify-content-end align-item-center">
-                                <Link to={`/order/${order._id}`} className="text-success">
-                                    <i className="fas fa-eye"></i>
-                                </Link>
                             </td>
                         </tr>
                     ))
