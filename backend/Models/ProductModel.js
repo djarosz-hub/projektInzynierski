@@ -20,15 +20,19 @@ const reviewSchema = mongoose.Schema({
         require: true,
         ref: "User"
     }
-});
+},
+    {
+        timestamps: true
+    }
+);
 
 const productSchema = mongoose.Schema({
     name: {
         type: String,
         require: true
     },
-    image: {
-        type: String,
+    images: {
+        type: [String],
         require: true,
     },
     description: {
@@ -37,11 +41,6 @@ const productSchema = mongoose.Schema({
     },
     reviews: [reviewSchema],
     rating: {
-        type: Number,
-        require: true,
-        default: 0
-    },
-    numReviews: {
         type: Number,
         require: true,
         default: 0
@@ -55,8 +54,12 @@ const productSchema = mongoose.Schema({
         type: Number,
         require: true,
         default: 0
+    },
+    totalSold: {
+        type: Number,
+        require: false,
+        default: 0
     }
-
 },
     {
         timestamps: true

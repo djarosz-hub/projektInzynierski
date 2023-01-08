@@ -13,10 +13,7 @@ orderRoute.post("/", protect, asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error("Invalid order - no items.");
     } else {
-        //todo remove 
-        const taxPrice = 123;
-
-        const order = new Order({ user: req.user._id, orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice });
+        const order = new Order({ user: req.user._id, orderItems, shippingAddress, paymentMethod, itemsPrice, shippingPrice, totalPrice });
 
         const createOrder = await order.save();
         res.status(201).json(createOrder)

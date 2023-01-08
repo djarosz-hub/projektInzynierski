@@ -7,12 +7,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { createProductReview, listProductDetails } from "../Redux/Actions/ProductActions";
 import Loading from './../components/LoadingError/Loading';
 import { PRODUCT_CREATE_REVIEW_RESET } from "../Redux/Constants/ProductConstants";
+import moment from 'moment';
 
 const SingleProduct = ({ history, match }) => {
     const [qty, setQty] = useState(1);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
-    let errorCreateReviewInitial = "";
 
     const dispatch = useDispatch();
     const productId = match.params.id;
@@ -129,9 +129,7 @@ const SingleProduct = ({ history, match }) => {
                                             <div key={review._id} className="mb-5 mb-md-3 bg-light p-3 shadow-sm rounded">
                                                 <strong>{review.name}</strong>
                                                 <Rating value={review.rating} />
-                                                {/* todo */}
-                                                <span>Jan 12 2021</span>
-                                                {/* <span>{moment(review.createdAt).calendar()}</span> */}
+                                                <span>{moment(review.createdAt).calendar('DD/MM/YYYY')}</span>
                                                 <div className="alert alert-info mt-3">
                                                     {review.comment}
                                                 </div>
