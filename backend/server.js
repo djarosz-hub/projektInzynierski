@@ -6,12 +6,22 @@ import productRoute from "./Routes/ProductRoutes.js";
 import { errorHandler, notFound } from "./Middleware/Errors.js";
 import userRoute from "./Routes/UserRoutes.js";
 import orderRoute from "./Routes/OrderRoutes.js";
+import session from "express-session";
 
 dotenv.config();
 await connectDb();
 
 const app = express();
 app.use(express.json());
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    saveUninitialized: true,
+    resave: false,
+    cookie: {
+        httpOnly: true,
+        maxAge: parseInt(process.env.SESSION_MAX_AGE),
+    }
+}));
 
 app.use("/api/import", ImportData);
 app.use("/api/products", productRoute);

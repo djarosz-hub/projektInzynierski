@@ -11,12 +11,13 @@ userRoute.post("/login", asyncHandler(async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
-        res.json({
+        req.session.token = generateToken(user._id);
+
+        res.status(200).json({
             _id: user._id,
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
-            token: generateToken(user._id),
             createdAt: user.createdAt
         })
     } else {
@@ -27,6 +28,7 @@ userRoute.post("/login", asyncHandler(async (req, res) => {
 
 userRoute.post("/", asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
+
     const userExists = await User.findOne({ email });
 
     if (userExists || (!name || !email || !password)) {
@@ -41,6 +43,7 @@ userRoute.post("/", asyncHandler(async (req, res) => {
     });
 
     if (user) {
+        req.session.token = generateToken(user._id);
         res.status(201).json({
             _id: user._id,
             name: user.name,
@@ -58,6 +61,7 @@ userRoute.get("/profile",
     protect,
     asyncHandler(async (req, res) => {
         const user = await User.findById(req.user._id);
+
         if (user) {
             res.json({
                 _id: user._id,
@@ -103,5 +107,51 @@ userRoute.get("/", protect, adminAccess, asyncHandler(async (req, res) => {
     const users = await User.find({});
     res.json(users);
 }))
+
+userRoute.get("/initialUserData",
+    // protect,
+    asyncHandler(async (req, res) => {
+        console.log(req)
+        if (req.user) {
+            try {
+
+                const user = await User.findById(req.user._id);
+                if (user) {
+                    res.json({
+                        _id: user._id,
+                        name: user.name,
+                        email: user.email,
+                        isAdmin: user.isAdmin,
+                        createdAt: user.createdAt
+                    })
+                } else {
+                    console.log('not found')
+                    res.status(404).json({});
+                }
+
+            } catch (e) {
+                console.log(e)
+                res.status(404).json({});
+            }
+        } else {
+            console.log('empty req')
+            res.status(404).json({});
+        }
+        // const user = await User.findById(req.user._id);
+
+        // if (user) {
+        //     res.json({
+        //         _id: user._id,
+        //         name: user.name,
+        //         email: user.email,
+        //         isAdmin: user.isAdmin,
+        //         createdAt: user.createdAt
+        //     })
+        // } else {
+        //     res.status(404).json({});
+        //     // throw new Error("User not found");
+        // }
+    })
+);
 
 export default userRoute;

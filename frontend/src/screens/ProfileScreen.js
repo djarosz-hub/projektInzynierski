@@ -20,7 +20,7 @@ const ProfileScreen = () => {
 
     useEffect(() => {
         dispatch(listUserOrders());
-        dispatch(getUserDetails("profile"));
+        dispatch(getUserDetails());
     }, [dispatch])
 
 
@@ -38,10 +38,10 @@ const ProfileScreen = () => {
                                 </div>
                                 <div className="author-card-details col-md-7">
                                     <h5 className="author-card-name mb-2">
-                                        <strong>{userInfo.name}</strong>
+                                        <strong>{userInfo?.name}</strong>
                                     </h5>
                                     <span className="author-card-position">
-                                        <>Joined {moment(userInfo.createdAt).calendar()}</>
+                                        <>Joined {moment(userInfo?.createdAt).calendar()}</>
                                     </span>
                                 </div>
                             </div>

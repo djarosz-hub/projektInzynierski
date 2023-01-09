@@ -22,6 +22,7 @@ orderRoute.post("/", protect, asyncHandler(async (req, res) => {
 
 orderRoute.get("/", protect, asyncHandler(async (req, res) => {
     const userOrders = await Order.find({ user: req.user._id }).sort({ _id: -1 });
+    // const userOrders = await Order.find({ user: req.user._id }).sort({ _id: -1 });
     res.json(userOrders);
 }));
 

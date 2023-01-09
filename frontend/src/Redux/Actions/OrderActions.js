@@ -106,7 +106,6 @@ export const listUserOrders = () => async (dispatch, getState) => {
 
         const { data } = await axios.get(`/api/orders`, config);
         dispatch({ type: ORDER_USER_LIST_SUCCESS, payload: data });
-
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         if (message === "Not authorized, token invalid") {
