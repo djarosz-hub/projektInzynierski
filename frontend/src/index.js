@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import store from './Redux/store';
 import { getInitialUserData } from './Redux/Actions/UserActions';
 
+
 store.dispatch(getInitialUserData());
 
 ReactDOM.render(

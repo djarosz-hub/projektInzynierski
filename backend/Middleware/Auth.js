@@ -4,17 +4,26 @@ import User from '../Models/UserModel.js';
 
 const protect = async (req, res, next) => {
 
-    const token = req.session?.token;
-    if (!token) {
-        res.status(403);
-        throw new Error("Unauthorized");
+    if (!req.session && !req.session.token) {
+        console.log('no session or no token')
+        res.status(401);
+        throw new Error("Not authorized.");
     }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    try {
+        const token = req.session.token;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = await User.findById(decoded.id).select("-password");
+        console.log('success protect')
+        next();
+    } catch (e) {
+        console.log('error protect');
+        res.status(401);
+        throw new Error("Not authorized");
+    }
+
     // console.log(decoded)
     //not sending password
-    req.user = await User.findById(decoded.id).select("-password");
     // console.log(req.user)
-    next();
 
 
     // let token;

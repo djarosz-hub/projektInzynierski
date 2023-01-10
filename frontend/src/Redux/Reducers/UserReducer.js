@@ -1,11 +1,18 @@
-import { USER_DETAILS_FAIL, USER_DETAILS_REQUEST, USER_DETAILS_RESET, USER_DETAILS_SUCCESS, USER_INITIAL_DATA, USER_LOGIN_FAIL, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_UPDATE_PROFILE_FAIL, USER_UPDATE_PROFILE_REQUEST } from "../Constants/UserConstants";
+import { USER_DETAILS_FAIL, USER_DETAILS_REQUEST, USER_DETAILS_RESET, USER_DETAILS_SUCCESS, USER_INITIAL_DATA, USER_INITIAL_DATA_FAIL, USER_INITIAL_DATA_REQUEST, USER_INITIAL_DATA_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_UPDATE_PROFILE_FAIL, USER_UPDATE_PROFILE_REQUEST } from "../Constants/UserConstants";
 import { USER_UPDATE_PROFILE_SUCCESS, USER_UPDATE_PROFILE_RESET } from './../Constants/UserConstants';
 
 export const userInitialDataReducer = (state = {}, action) => {
     switch (action.type) {
-        case USER_INITIAL_DATA:
-            console.log('in reducer: ' + action.payload)
-            return action.payload
+        case USER_INITIAL_DATA_REQUEST:
+            return { loading: true }
+        case USER_INITIAL_DATA_SUCCESS:
+            console.log('in reducer: ')
+            console.log(action.payload)
+            return { loading: false, userInfo: action.payload }
+        case USER_INITIAL_DATA_FAIL: {
+            console.log('reducer fail')
+            return { loading: false, error:action.payload, userInfo: null};
+        }
         default:
             return state
     }

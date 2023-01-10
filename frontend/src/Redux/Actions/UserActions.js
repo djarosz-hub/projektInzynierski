@@ -1,4 +1,4 @@
-import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL, USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_DETAILS_FAIL, USER_DETAILS_RESET, USER_UPDATE_PROFILE_REQUEST, USER_UPDATE_PROFILE_SUCCESS, USER_UPDATE_PROFILE_FAIL, USER_INITIAL_DATA } from './../Constants/UserConstants';
+import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL, USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_DETAILS_FAIL, USER_DETAILS_RESET, USER_UPDATE_PROFILE_REQUEST, USER_UPDATE_PROFILE_SUCCESS, USER_UPDATE_PROFILE_FAIL, USER_INITIAL_DATA, USER_INITIAL_DATA_REQUEST, USER_INITIAL_DATA_SUCCESS, USER_INITIAL_DATA_FAIL } from './../Constants/UserConstants';
 import axios from 'axios';
 import { ORDER_USER_LIST_RESET } from '../Constants/OrderConstants';
 
@@ -105,7 +105,6 @@ export const updateProfile = (user) => async (dispatch, getState) => {
 
         const { data } = await axios.put(`/api/users/profile`, user, config);
         dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: data });
-        dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
         // localStorage.setItem("userInfo", JSON.stringify(data));
 
     } catch (error) {
@@ -120,24 +119,27 @@ export const updateProfile = (user) => async (dispatch, getState) => {
     }
 };
 
-const testfunc = (data) => ({
-    type: USER_INITIAL_DATA,
-    payload: data
-})
 
 export const getInitialUserData = () => {
     return async dispatch => {
         try {
-            let data = await axios.get(`/api/users/initialUserData`);
-            console.log('data in action: ' + data)
+            dispatch({ type: USER_LOGIN_REQUEST });
+
+            // dispatch({ type: USER_INITIAL_DATA_REQUEST })
+            const { data } = await axios.get(`/api/users/initialUserData`);
+            console.log('data in action: ')
+            console.log(data);
             // dispatch(testfunc(data))
-            dispatch({
-                type: USER_INITIAL_DATA,
-                payload: data
-            })
+            // dispatch({
+            //     type: USER_INITIAL_DATA_SUCCESS,
+            //     payload: data
+            // })
+            dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
         }
         catch (e) {
             console.log(e)
+            dispatch({ type: USER_LOGIN_FAIL })
+            // dispatch({ type: USER_INITIAL_DATA_FAIL })
         }
     }
 };

@@ -33,7 +33,7 @@ const initialState = {
         cartItems: cartItemsFromLocalStorage,
         shippingAddress: shippingInfoFromLocalStorage
     },
-    userLogin: { userInfo: userInfoFromLocalStorage },
+    userLogin: { userInfo: null },
 };
 
 const middleware = [thunk];
