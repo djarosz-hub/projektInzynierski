@@ -62,6 +62,12 @@ userRoute.post("/login", asyncHandler(async (req, res) => {
     }
 }));
 
+userRoute.get("/logout", (req,res) => {
+    if(req.session) {
+        req.session.destroy();
+    }
+});
+
 userRoute.post("/", asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
 
@@ -96,6 +102,7 @@ userRoute.post("/", asyncHandler(async (req, res) => {
 userRoute.get("/profile",
     protect,
     asyncHandler(async (req, res) => {
+        console.log('is here')
         const user = await User.findById(req.user._id);
 
         if (user) {

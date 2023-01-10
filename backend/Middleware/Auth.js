@@ -16,10 +16,12 @@ const protect = async (req, res, next) => {
         console.log('success protect')
         next();
     } catch (e) {
+        // console.error(e)
         console.log('error protect');
         res.status(401);
-        throw new Error("Not authorized");
+        next(e);
     }
+    
 
     // console.log(decoded)
     //not sending password
