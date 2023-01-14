@@ -18,10 +18,14 @@ productRoute.get("/", asyncHandler(async (req, res) => {
         }
     } : {};
 
-    const count = await Product.countDocuments({ ...keyword });
-    const products = await Product.find({ ...keyword }).limit(pageSize).skip(pageSize * (page - 1)).sort({ _id: -1 });
+    try {
+        const count = await Product.countDocuments({ ...keyword });
+        const products = await Product.find({ ...keyword }).limit(pageSize).skip(pageSize * (page - 1)).sort({ _id: -1 });
 
-    res.json({ products, page, pages: Math.ceil(count / pageSize) });
+        res.json({ products, page, pages: Math.ceil(count / pageSize) });
+    } catch (e) {
+        throw new Error('Error loading products.');
+    }
 }));
 
 // admin get all products
@@ -32,45 +36,64 @@ productRoute.get("/all", protect, adminAccess, asyncHandler(async (req, res) => 
 
 
 productRoute.get("/:id", asyncHandler(async (req, res) => {
-    const product = await Product.findById(req.params.id);
-    if (product) {
-        res.json(product);
-    } else {
+    try {
+        const product = await Product.findById(req.params.id);
+        console.log('after')
+        if (product) {
+            res.json(product);
+        } else {
+            throw new Error();
+        }
+    } catch (e) {
         res.status(404);
-        throw new Error("Product not Found");
+        throw new Error("Product not Found.");
     }
-
 }));
 
 productRoute.post("/:id/review", protect, asyncHandler(async (req, res) => {
 
     const { rating, comment } = req.body;
-    const product = await Product.findById(req.params.id);
+    const id = req.params.id;
+    if (!rating || !comment || !id) {
+        res.status(400);
+        throw new Error("Invalid review data.");
+    }
 
+    let product = null;
+    try {
+        product = await Product.findById(id);
+    } catch (error) {
+        res.status(404);
+        throw new Error("Product not found.");
+    }
     if (product) {
         const alreadyReviewed = product.reviews.find((review) => review.user.toString() === req.user._id.toString());
         if (alreadyReviewed) {
             res.status(400);
             throw new Error("Product already reviewed.");
         }
-        const review = {
-            name: req.user.name,
-            rating: Number(rating),
-            comment: comment,
-            user: req.user._id
-        };
+        try {
+            const review = {
+                name: req.user.name,
+                rating: Number(rating),
+                comment: comment,
+                user: req.user._id
+            };
 
-        product.reviews.push(review);
-        product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
+            product.reviews.push(review);
+            product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
 
-        await product.save();
-        res.status(201).json({ message: "Review added." });
+            await product.save();
+            res.status(201).json({ message: "Review added." });
 
+        } catch (error) {
+            res.status(400);
+            throw new Error("Error adding review.");
+        }
     } else {
         res.status(404);
         throw new Error("Product not found.");
     }
-
 }));
 
 productRoute.delete("/:id", protect, adminAccess, asyncHandler(async (req, res) => {

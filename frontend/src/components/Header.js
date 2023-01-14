@@ -120,7 +120,7 @@ const Header = () => {
 
                                     <Link to="/cart" className="cart-mobile-icon">
                                         <i className="fas fa-shopping-bag"></i>
-                                        <span className="badge">{cartItems.length}</span>
+                                        {cartItems.length > 0 ? (<span className="badge">{cartItems.length}</span>) : <></>}
                                     </Link>
                                 </div>
                                 <div className="col-12 d-flex align-items-center">

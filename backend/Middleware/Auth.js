@@ -3,7 +3,7 @@ import asyncHandler from 'express-async-handler';
 import User from '../Models/UserModel.js';
 
 const protect = async (req, res, next) => {
-
+    // console.log(req.session)
     if (!req.session && !req.session.token) {
         console.log('no session or no token')
         res.status(401);
@@ -16,12 +16,12 @@ const protect = async (req, res, next) => {
         console.log('success protect')
         next();
     } catch (e) {
-        // console.error(e)
+        // console.log(e)
         console.log('error protect');
         res.status(401);
         next(e);
     }
-    
+
 
     // console.log(decoded)
     //not sending password

@@ -9,7 +9,6 @@ import jwt from "jsonwebtoken";
 const userRoute = express.Router();
 
 userRoute.get("/initialUserData",
-    // protect,
     asyncHandler(async (req, res) => {
         console.log('initial')
         if (req.session && req.session.token) {
@@ -43,70 +42,19 @@ userRoute.get("/initialUserData",
 );
 
 userRoute.post("/login", asyncHandler(async (req, res) => {
+
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
-
-    if (user && (await user.matchPassword(password))) {
-        req.session.token = generateToken(user._id);
-
-        res.status(200).json({
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            isAdmin: user.isAdmin,
-            createdAt: user.createdAt
-        })
-    } else {
-        res.status(401);
-        throw new Error("Invalid Email or Password ");
-    }
-}));
-
-userRoute.get("/logout", (req,res) => {
-    if(req.session) {
-        req.session.destroy();
-    }
-});
-
-userRoute.post("/", asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body;
-
-    const userExists = await User.findOne({ email });
-
-    if (userExists || (!name || !email || !password)) {
+    if (!email || !password) {
         res.status(400);
-        throw new Error("User already exists or data is invalid");
+        throw new Error("Invalid data.");
     }
 
-    const user = await User.create({
-        name,
-        email,
-        password
-    });
+    try {
+        const user = await User.findOne({ email });
 
-    if (user) {
-        req.session.token = generateToken(user._id);
-        res.status(201).json({
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            isAdmin: user.isAdmin,
-            token: generateToken(user._id)
-        })
-    } else {
-        res.status(400);
-        throw new Error("Invalid user data");
-    }
-}));
-
-userRoute.get("/profile",
-    protect,
-    asyncHandler(async (req, res) => {
-        console.log('is here')
-        const user = await User.findById(req.user._id);
-
-        if (user) {
-            res.json({
+        if (user && (await user.matchPassword(password))) {
+            req.session.token = generateToken(user._id);
+            res.status(200).json({
                 _id: user._id,
                 name: user.name,
                 email: user.email,
@@ -114,16 +62,95 @@ userRoute.get("/profile",
                 createdAt: user.createdAt
             })
         } else {
-            res.status(404);
-            throw new Error("User not found");
+            throw new Error();
         }
+    } catch (e) {
+        res.status(401);
+        throw new Error("Invalid Email or Password.");
+    }
+
+}));
+
+userRoute.get("/logout", (req, res) => {
+    if (req.session) {
+        req.session.destroy();
+    }
+    res.status(200);
+});
+
+userRoute.post("/", asyncHandler(async (req, res) => {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+        res.status(400);
+        throw new Error("Invalid data.");
+    }
+    console.log(name + ' ' + email + ' ' + password)
+    const userExists = await User.findOne({ email });
+    console.log('after')
+    if (userExists || (!name || !email || !password)) {
+        res.status(400);
+        throw new Error("User already exists or data is invalid.");
+    }
+
+    try {
+        const user = await User.create({ name, email, password });
+
+        if (user) {
+            req.session.token = generateToken(user._id);
+            res.status(201).json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                isAdmin: user.isAdmin,
+                createdAt: user.createdAt
+            })
+        } else {
+            throw new Error();
+        }
+    } catch (error) {
+        res.status(400);
+        throw new Error("Invalid user data.");
+    }
+}));
+
+userRoute.get("/profile",
+    protect,
+    asyncHandler(async (req, res) => {
+        const requestUserId = req.user._id;
+        if (!requestUserId) {
+            res.status(404);
+            throw new Error("Invalid user id.");
+        }
+
+        let user = null;
+        try {
+            user = await User.findById(requestUserId);
+        } catch (error) {
+            res.status(404);
+            throw new Error("User not found.");
+        }
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            createdAt: user.createdAt
+        });
     })
 );
 
 userRoute.put("/profile",
     protect,
     asyncHandler(async (req, res) => {
-        const user = await User.findById(req.user._id);
+
+        // const requestUserId = req.user._id;
+        const requestUserId = '';
+        if (!requestUserId) {
+            res.status(404);
+            throw new Error("Invalid user id.");
+        }
+
+        const user = await User.findById(requestUserId);
         if (user) {
             user.name = req.body.name || user.name;
             user.email = req.body.email || user.email;

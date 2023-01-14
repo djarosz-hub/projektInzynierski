@@ -13,6 +13,7 @@ const SingleProduct = ({ history, match }) => {
     const [qty, setQty] = useState(1);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
+    const [invalidFormDataError, setInvalidFormDataError] = useState("");
 
     const dispatch = useDispatch();
     const productId = match.params.id;
@@ -27,7 +28,6 @@ const SingleProduct = ({ history, match }) => {
     const { loading: loadingCreateReview, error: errorCreateReview, success: successCreateReview } = productCreateReview;
 
     useEffect(() => {
-
         if (successCreateReview) {
             setRating(0);
             setComment("");
@@ -49,6 +49,11 @@ const SingleProduct = ({ history, match }) => {
 
     const submitReviewHandler = (e) => {
         e.preventDefault();
+        // if (!rating || comment.trim() === '') {
+        //     setInvalidFormDataError('Please fill all required data correctly.');
+        // } else {
+        //     setInvalidFormDataError('');
+        // }
         dispatch(createProductReview(productId, { rating, comment }))
     }
 
@@ -143,6 +148,7 @@ const SingleProduct = ({ history, match }) => {
                                     <div className="my-4">
                                         {loadingCreateReview && <Loading />}
                                         {errorCreateReview && (<Message variant={"alert-danger"}>{errorCreateReview}</Message>)}
+                                        {invalidFormDataError && <Message variant="alert-danger">{invalidFormDataError}</Message>}
                                     </div>
                                     {
                                         userInfo ? (
@@ -165,6 +171,7 @@ const SingleProduct = ({ history, match }) => {
                                                         value={comment}
                                                         onChange={(e) => setComment(e.target.value)}
                                                         className="col-12 bg-light p-3 mt-2 border-0 rounded"
+                                                        // required
                                                     ></textarea>
                                                 </div>
                                                 <div className="my-3">

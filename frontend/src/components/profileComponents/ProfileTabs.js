@@ -8,6 +8,8 @@ import { updateProfile } from "../../Redux/Actions/UserActions";
 
 const ProfileTabs = () => {
 
+// todo update profilu, wyjebanie jak jwt sie skonczy, walidacja itp
+
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
