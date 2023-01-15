@@ -38,6 +38,9 @@ export const getInitialUserData = () => {
             const { data } = await axios.get(`/api/users/initialUserData`);
             console.log('data in action: ')
             console.log(data);
+            if (!data) {
+                throw new Error();
+            }
             // dispatch(testfunc(data))
             // dispatch({
             //     type: USER_INITIAL_DATA_SUCCESS,

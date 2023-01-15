@@ -31,7 +31,8 @@ const PlaceOrderScreen = ({ history }) => {
 
     useEffect(() => {
         if (success) {
-            history.push(`/order/${order._id}`);
+            // history.push(`/order/${order._id}`);
+            window.location.assign(`/order/${order._id}`);
             dispatch({ type: ORDER_CREATE_RESET });
         }
     }, [dispatch, success, order, history]);

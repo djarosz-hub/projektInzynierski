@@ -8,10 +8,21 @@ import Loading from './../components/LoadingError/Loading';
 import Message from "../components/LoadingError/Error";
 import moment from 'moment';
 import axios from "axios";
-import { ORDER_PAYMENT_RESET } from './../Redux/Constants/OrderConstants';
+import { ORDER_DETAILS_RESET, ORDER_PAYMENT_RESET } from './../Redux/Constants/OrderConstants';
+import { toast } from "react-toastify";
+import Toast from './../components/LoadingError/Toast';
+
 
 const OrderScreen = ({ match }) => {
     window.scrollTo(0, 0);
+
+    const toastId = React.useRef(null);
+    const ToastObjects = {
+        pauseOnFocusLoss: false,
+        draggable: false,
+        pauseOnHover: true,
+        autoClose: 4000,
+    }
 
     const [sdkReady, setSdkReady] = useState(false);
     const dispatch = useDispatch();
@@ -22,7 +33,7 @@ const OrderScreen = ({ match }) => {
     const { order, loading, error } = orderDetails;
 
     const orderPayment = useSelector((state) => state.orderPayment);
-    const { loading: loadingPayment, success: successPayment } = orderPayment;
+    const { loading: loadingPayment, success: successPayment, error: errorPayment } = orderPayment;
 
     const formattedAddress = `${order?.shippingAddress?.address} ${order?.shippingAddress?.postalCode} ${order?.shippingAddress?.city}`;
 
@@ -37,7 +48,11 @@ const OrderScreen = ({ match }) => {
     }
 
     useEffect(() => {
+        // dispatch(getOrderDetails(orderId));
 
+        // dispatch({ type: ORDER_DETAILS_RESET });
+
+        // console.log('error payment' + errorPayment);
         const addPayPalScript = async () => {
             const { data: clientId } = await axios.get("/api/config/paypal");
             const script = document.createElement("script");
@@ -50,25 +65,56 @@ const OrderScreen = ({ match }) => {
             document.body.appendChild(script);
         };
         if (!order || successPayment) {
+
+            if (successPayment) {
+                if (!toast.isActive(toastId.current)) {
+                    toastId.current = toast.success("Payment success.", ToastObjects);
+                }
+            }
+
             dispatch({ type: ORDER_PAYMENT_RESET });
             dispatch(getOrderDetails(orderId));
         } else if (!order.isPaid) {
+
+            if (errorPayment) {
+                if (!toast.isActive(toastId.current)) {
+                    toastId.current = toast.error(`Payment error: ${errorPayment}, please contact us. `, ToastObjects);
+                }
+            }
+
             if (!window.paypal) {
                 addPayPalScript();
             } else {
                 setSdkReady(true);
             }
         }
+        // return () => {
+        //     dispatch({ type: ORDER_DETAILS_RESET });
+        // }
 
-    }, [dispatch, orderId, order, successPayment]);
+    }, [dispatch, orderId, order, loading, successPayment, errorPayment]);
+
+    // useEffect(() => {
+    //     // dispatch(getOrderDetails(orderId));
+
+    //     return () => {
+    //         dispatch({ type: ORDER_DETAILS_RESET });
+    //     }
+    // }, [])
 
     const successPaymentHandler = (paymentResult) => {
-        console.log(paymentResult);
         dispatch(payOrder(orderId, paymentResult));
-    }
+    };
+
+    const cancelPaymentHandler = (result) => {
+        if (!toast.isActive(toastId.current)) {
+            toastId.current = toast.error("Payment failed.", ToastObjects);
+        }
+    };
 
     return (
         <>
+            <Toast />
             <Header />
             <div className="container">
                 {
@@ -222,7 +268,10 @@ const OrderScreen = ({ match }) => {
                                                     !sdkReady ? (
                                                         <Loading />
                                                     ) : (
-                                                        <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler} />
+                                                        <PayPalButton amount={order.totalPrice}
+                                                            onSuccess={successPaymentHandler}
+                                                            onCancel={cancelPaymentHandler}
+                                                        />
                                                     )
                                                 }
                                             </div>

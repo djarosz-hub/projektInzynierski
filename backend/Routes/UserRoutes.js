@@ -36,7 +36,7 @@ userRoute.get("/initialUserData",
             }
         } else {
             console.log('empty req')
-            res.status(400).json({});
+            res.status(204).json({});
         }
     })
 );
@@ -129,7 +129,7 @@ userRoute.get("/profile",
             res.status(404);
             throw new Error("User not found.");
         }
-        res.json({
+        res.status(200).json({
             _id: user._id,
             name: user.name,
             email: user.email,

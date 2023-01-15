@@ -40,40 +40,78 @@ orderRoute.get("/all", protect, adminAccess, asyncHandler(async (req, res) => {
 }));
 
 orderRoute.get("/:id", protect, asyncHandler(async (req, res) => {
+    const requestOrderId = req.params.id;
+    if (!requestOrderId) {
+        // console.log('wrong id');
+        res.status(400);
+        throw new Error("Invalid order id.");
+    }
 
-    const order = await Order.findById(req.params.id).populate(
-        "user",
-        "name email"
-    );
-
-    if (order) {
-        res.json(order);
-    } else {
+    let order = null;
+    try {
+        order = await Order.findById(requestOrderId).populate("user", "name email");
+    } catch (e) {
+        // console.log('error getting order')
         res.status(404);
         throw new Error("Order not found.");
+    }
+
+    if (order) {
+        // console.log('have order')
+        res.status(200).json(order);
+    } else {
+        // console.log('not have order')
+        res.status(500);
+        throw new Error("Internal Server error.");
     }
 }));
 
 orderRoute.put("/:id/payment", protect, asyncHandler(async (req, res) => {
 
-    const order = await Order.findById(req.params.id);
+    const orderId = req.params.id;
+    // const orderId = "";
+    if (!orderId) {
+        res.status(400);
+        throw new Error('Invalid order id');
+    }
 
-    if (order) {
-        order.isPaid = true;
-        order.paidAt = Date.now();
-        order.paymentResult = {
-            id: req.body.id,
-            status: req.body.status,
-            update_time: req.body.update_time,
-            email_address: req.body.email_address,
-        };
+    const { id, status, update_time } = req.body;
+    const { email_address } = req.body.payer;
+    // const { email_address } = '';
+    if (!id || !status || !update_time || !email_address) {
+        res.status(400);
+        throw new Error('Invalid payment data');
+    }
 
-        const updatedOrder = await order.save();
-        res.json(updatedOrder);
-
-    } else {
+    let order = null;
+    try {
+        order = await Order.findById(req.params.id);
+        // throw new Error();
+    } catch (error) {
         res.status(404);
-        throw new Error("Order not found.");
+        throw new Error("Order not found");
+    };
+
+    try {
+        if (order) {
+            order.isPaid = true;
+            order.paidAt = Date.now();
+            order.paymentResult = {
+                id: id,
+                status: status,
+                update_time: update_time,
+                email_address: email_address,
+            };
+
+            const updatedOrder = await order.save();
+            res.json(updatedOrder);
+
+        } else {
+            throw new Error();
+        }
+    } catch (error) {
+        res.status(500);
+        throw new Error('Internal server error');
     }
 }));
 

@@ -49,12 +49,12 @@ const SingleProduct = ({ history, match }) => {
 
     const submitReviewHandler = (e) => {
         e.preventDefault();
-        // if (!rating || comment.trim() === '') {
-        //     setInvalidFormDataError('Please fill all required data correctly.');
-        // } else {
-        //     setInvalidFormDataError('');
-        // }
-        dispatch(createProductReview(productId, { rating, comment }))
+        if (!rating || comment.trim() === '') {
+            setInvalidFormDataError('Please fill all required data correctly.');
+        } else {
+            setInvalidFormDataError('');
+            dispatch(createProductReview(productId, { rating, comment }))
+        }
     }
 
     return (
@@ -171,7 +171,7 @@ const SingleProduct = ({ history, match }) => {
                                                         value={comment}
                                                         onChange={(e) => setComment(e.target.value)}
                                                         className="col-12 bg-light p-3 mt-2 border-0 rounded"
-                                                        // required
+                                                        required
                                                     ></textarea>
                                                 </div>
                                                 <div className="my-3">

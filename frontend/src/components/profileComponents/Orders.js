@@ -51,7 +51,7 @@ const Orders = (props) => {
                                                             </a>
                                                         </td>
                                                         <td>{order.isPaid ? <>Paid</> : <>Not paid</>}</td>
-                                                        <td>{moment(order.createdAt).calendar()}</td>
+                                                        <td>{moment(order.createdAt).calendar('DD/MM/YYYY')}</td>
                                                         <td>${(order.totalPrice).toFixed(2)}</td>
                                                     </tr>
                                                 ))
