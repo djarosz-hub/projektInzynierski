@@ -34,15 +34,14 @@ export const listProductDetails = (id) => async (dispatch) => {
     }
 }
 
-export const createProductReview = (productId, review) => async (dispatch, getState) => {
+export const createProductReview = (productId, review) => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_CREATE_REVIEW_REQUEST });
         await axios.post(`/api/products/${productId}/review`, review);
         dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        if (error.response && error.response.statusText === 'Unauthorized') {
-            console.log('dispatch logout')
+        if (error.response && error.response.status === 401) {
             dispatch(logout());
         }
         dispatch({

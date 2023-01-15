@@ -8,15 +8,23 @@ const orderRoute = express.Router();
 orderRoute.post("/", protect, asyncHandler(async (req, res) => {
 
     const { orderItems, shippingAddress, paymentMethod, itemsPrice, shippingPrice, totalPrice } = req.body;
-
-    if (orderItems && orderItems.length === 0) {
+    console.log(orderItems)
+    console.log(shippingAddress)
+    console.log(paymentMethod)
+    console.log(itemsPrice)
+    console.log(shippingPrice)
+    console.log(totalPrice)
+    if (!orderItems || orderItems.length === 0 || !shippingAddress || !paymentMethod || !itemsPrice || !shippingPrice || !totalPrice) {
         res.status(400);
-        throw new Error("Invalid order - no items.");
-    } else {
-        const order = new Order({ user: req.user._id, orderItems, shippingAddress, paymentMethod, itemsPrice, shippingPrice, totalPrice });
+        throw new Error("Invalid order data.");
+    }
 
+    try {
+        const order = new Order({ user: req.user._id, orderItems, shippingAddress, paymentMethod, itemsPrice, shippingPrice, totalPrice });
         const createOrder = await order.save();
-        res.status(201).json(createOrder)
+        res.status(201).json(createOrder);
+    } catch (error) {
+        throw new Error("Failed to create order.");
     }
 }));
 

@@ -5,10 +5,9 @@ import Message from './../LoadingError/Error';
 import Loading from './../LoadingError/Loading';
 import { toast } from "react-toastify";
 import { updateProfile } from "../../Redux/Actions/UserActions";
+import { USER_UPDATE_PROFILE_RESET } from "../../Redux/Constants/UserConstants";
 
 const ProfileTabs = () => {
-
-// todo update profilu, wyjebanie jak jwt sie skonczy, walidacja itp
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -29,27 +28,49 @@ const ProfileTabs = () => {
     const { loading, error, user } = userDetails;
 
     const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
-    const { loading: updateLoading } = userUpdateProfile;
+    const { loading: updateLoading, error: errorUpdate } = userUpdateProfile;
 
     useEffect(() => {
+
+        if (!toast.isActive(toastId.current) && !updateLoading && updateLoading != undefined) {
+            if (errorUpdate) {
+                toastId.current = toast.error("Profile updated failed", ToastObjects);
+            } else {
+                toastId.current = toast.success("Profile updated successfully", ToastObjects);
+            }
+        }
+
         if (user) {
             setName(user.name);
             setEmail(user.email);
         }
-    }, [dispatch, user]);
+        
+        return () => {
+            dispatch({ type: USER_UPDATE_PROFILE_RESET });
+        }
+    }, [dispatch, user, errorUpdate]);
 
     const submitHandler = (e) => {
         e.preventDefault();
+        if (name.trim() === '' || password.trim() === '' || confirmPassword.trim() === '') {
+            if (!toast.isActive(toastId.current)) {
+                toastId.current = toast.error("Invalid data.", ToastObjects);
+            }
+            return;
+        }
+
         if (password !== confirmPassword) {
             if (!toast.isActive(toastId.current)) {
                 toastId.current = toast.error("Passwords are not matching", ToastObjects);
             }
-        } else {
-            dispatch(updateProfile({ id: user._id, name, email, password }))
-            if (!toast.isActive(toastId.current)) {
-                toastId.current = toast.success("Profile updated successfully", ToastObjects);
-            }
+            return;
         }
+
+        dispatch(updateProfile({ name, password }))
+        // if (!toast.isActive(toastId.current)) {
+        //     toastId.current = toast.success("Profile updated successfully", ToastObjects);
+
+        // }
     };
 
     return (
@@ -69,7 +90,7 @@ const ProfileTabs = () => {
                 <div className="col-md-6">
                     <div className="form">
                         <label for="account-email">E-mail Address</label>
-                        <input className="form-control" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                        <input className="form-control" type="email" value={email} readOnly disabled />
                     </div>
                 </div>
                 <div className="col-md-6">

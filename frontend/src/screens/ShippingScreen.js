@@ -2,9 +2,20 @@ import React, { useState } from "react";
 import Header from "../components/Header";
 import { useDispatch, useSelector } from 'react-redux';
 import { saveShippingAddress } from './../Redux/Actions/CartActions';
+import { toast } from "react-toastify";
+import Toast from './../components/LoadingError/Toast';
+
 
 const ShippingScreen = ({ history }) => {
     window.scrollTo(0, 0);
+
+    const toastId = React.useRef(null);
+    const ToastObjects = {
+        pauseOnFocusLoss: false,
+        draggable: false,
+        pauseOnHover: false,
+        autoClose: 2000,
+    }
 
     const cart = useSelector((state) => state.cart);
     const { shippingAddress } = cart;
@@ -18,11 +29,19 @@ const ShippingScreen = ({ history }) => {
 
     const submitHandler = (e) => {
         e.preventDefault();
+        if (address.trim() === '' || city.trim() === '' || postalCode.trim() === '' || country.trim() === '') {
+            if (!toast.isActive(toastId.current)) {
+                toastId.current = toast.error("Invalid shipping address.", ToastObjects);
+            }
+            return;
+        }
+
         dispatch(saveShippingAddress({ address, city, postalCode, country }));
         history.push("/payment");
     };
     return (
         <>
+            <Toast />
             <Header />
             <div className="container d-flex justify-content-center align-items-center login-center">
                 <form

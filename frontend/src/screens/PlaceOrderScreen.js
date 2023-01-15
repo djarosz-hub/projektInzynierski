@@ -37,8 +37,6 @@ const PlaceOrderScreen = ({ history }) => {
     }, [dispatch, success, order, history]);
 
     const placeOrderHandler = (e) => {
-        //todo sprawdzic
-        // e.preventDefault();
         dispatch(createOrder({
             orderItems: cart.cartItems,
             shippingAddress: cart.shippingAddress,

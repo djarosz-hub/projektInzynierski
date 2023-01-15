@@ -143,32 +143,42 @@ userRoute.put("/profile",
     protect,
     asyncHandler(async (req, res) => {
 
-        // const requestUserId = req.user._id;
-        const requestUserId = '';
-        if (!requestUserId) {
+        const userId = req.user._id;
+        // const userId = 'dupa';
+        const { name, password } = req.body;
+        console.log(name + ' ' + password + ' ' + userId);
+        // const requestUserId = '';
+        if (!userId) {
+            console.log('no id')
             res.status(404);
-            throw new Error("Invalid user id.");
+            throw new Error("Invalid data.");
         }
-
-        const user = await User.findById(requestUserId);
+        let user = null;
+        try {
+            user = await User.findById(userId);
+        } catch (error) {
+            console.log('error finding user')
+            res.status(404);
+            throw new Error("User not found.");
+        }
         if (user) {
-            user.name = req.body.name || user.name;
-            user.email = req.body.email || user.email;
-            if (req.body.password) {
-                user.password = req.body.password;
+            user.name = name || user.name;
+            if (password) {
+                user.password = password;
             }
             const updatedUser = await user.save();
-            res.json({
+            res.status(200).json({
                 _id: updatedUser._id,
                 name: updatedUser.name,
                 email: updatedUser.email,
                 isAdmin: updatedUser.isAdmin,
-                createdAt: updatedUser.createdAt,
-                token: generateToken(updatedUser._id)
+                createdAt: updatedUser.createdAt
             })
         } else {
+            console.log('error after user')
+
             res.status(404);
-            throw new Error("User not found");
+            throw new Error("User not found.");
         }
     })
 );

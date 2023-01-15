@@ -2,9 +2,20 @@ import React, { useState } from "react";
 import Header from "./../components/Header";
 import { useDispatch, useSelector } from 'react-redux';
 import { savePaymentMethod } from "../Redux/Actions/CartActions";
+import { toast } from "react-toastify";
+import Toast from './../components/LoadingError/Toast';
+
 
 const PaymentScreen = ({ history }) => {
     window.scrollTo(0, 0);
+
+    const toastId = React.useRef(null);
+    const ToastObjects = {
+        pauseOnFocusLoss: false,
+        draggable: false,
+        pauseOnHover: false,
+        autoClose: 2000,
+    }
 
     const cart = useSelector((state) => state.cart);
     const { shippingAddress } = cart;
@@ -19,12 +30,20 @@ const PaymentScreen = ({ history }) => {
 
     const submitHandler = (e) => {
         e.preventDefault();
+        if (paymentMethod.trim() === '') {
+            if (!toast.isActive(toastId.current)) {
+                toastId.current = toast.error("Invalid payment method.", ToastObjects);
+            }
+            return;
+        }
+
         dispatch(savePaymentMethod(paymentMethod));
         history.push("/placeorder");
     };
 
     return (
         <>
+            <Toast />
             <Header />
             <div className="container d-flex justify-content-center align-items-center login-center">
                 <form

@@ -89,37 +89,30 @@ export const getUserDetails = () => async (dispatch, getState) => {
         //         Authorization: `Bearer ${userInfo.token}`
         //     }
         // }
-        console.log('user details before')
+        // console.log('user details before')
         const { data } = await axios.get(`/api/users/profile`);
         dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
-        console.log('user details after')
+        // console.log('user details after')
 
     } catch (error) {
-        console.log('user details error')
+        // console.log('user details error')
         dispatch(logout())
     }
 };
 
-export const updateProfile = (user) => async (dispatch, getState) => {
+export const updateProfile = (userData) => async (dispatch, getState) => {
     try {
         dispatch({ type: USER_UPDATE_PROFILE_REQUEST });
-        const {
-            userLogin: { userInfo },
-        } = getState();
 
-        const config = {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+        const { data } = await axios.put(`/api/users/profile`, userData);
 
-        const { data } = await axios.put(`/api/users/profile`, user, config);
         dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: data });
+        dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
+        dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
 
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        if (message === "Not authorized, token invalid") {
+        if (error.response && error.response.status === 401) {
             dispatch(logout());
         }
         dispatch({

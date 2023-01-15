@@ -38,7 +38,7 @@ productRoute.get("/all", protect, adminAccess, asyncHandler(async (req, res) => 
 productRoute.get("/:id", asyncHandler(async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
-        console.log('after')
+        // console.log('after')
         if (product) {
             res.json(product);
         } else {
