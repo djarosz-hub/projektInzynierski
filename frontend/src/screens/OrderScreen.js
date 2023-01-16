@@ -48,6 +48,7 @@ const OrderScreen = ({ match }) => {
     }
 
     useEffect(() => {
+        // console.log('effect ')
         // dispatch(getOrderDetails(orderId));
 
         // dispatch({ type: ORDER_DETAILS_RESET });
@@ -64,7 +65,7 @@ const OrderScreen = ({ match }) => {
             }
             document.body.appendChild(script);
         };
-        if (!order || successPayment) {
+        if ((!order && !error) || successPayment) {
 
             if (successPayment) {
                 if (!toast.isActive(toastId.current)) {
@@ -74,7 +75,7 @@ const OrderScreen = ({ match }) => {
 
             dispatch({ type: ORDER_PAYMENT_RESET });
             dispatch(getOrderDetails(orderId));
-        } else if (!order.isPaid) {
+        } else if (!order?.isPaid) {
 
             if (errorPayment) {
                 if (!toast.isActive(toastId.current)) {

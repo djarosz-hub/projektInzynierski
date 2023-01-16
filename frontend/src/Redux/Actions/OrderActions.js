@@ -25,6 +25,7 @@ export const createOrder = (order) => async (dispatch) => {
 };
 
 export const getOrderDetails = (id) => async (dispatch, getState) => {
+    console.log('getting details')
     try {
 
         dispatch({ type: ORDER_DETAILS_REQUEST });
@@ -48,8 +49,6 @@ export const payOrder = (orderId, paymentResult) => async (dispatch) => {
         dispatch({ type: ORDER_PAYMENT_REQUEST });
         const { data } = await axios.put(`/api/orders/${orderId}/payment`, paymentResult);
         dispatch({ type: ORDER_PAYMENT_SUCCESS, payload: data });
-        //check
-        // dispatch({ type: ORDER_DETAILS_RESET });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         if (error.response && error.response.status === 401) {
@@ -62,24 +61,14 @@ export const payOrder = (orderId, paymentResult) => async (dispatch) => {
     }
 };
 
-export const listUserOrders = () => async (dispatch, getState) => {
+export const listUserOrders = () => async (dispatch) => {
     try {
         dispatch({ type: ORDER_USER_LIST_REQUEST });
-        const {
-            userLogin: { userInfo },
-        } = getState();
-
-        const config = {
-            headers: {
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
-
-        const { data } = await axios.get(`/api/orders`, config);
+        const { data } = await axios.get(`/api/orders`);
         dispatch({ type: ORDER_USER_LIST_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        if (message === "Not authorized, token invalid") {
+        if (error.response && error.response.status === 401) {
             dispatch(logout());
         }
         dispatch({

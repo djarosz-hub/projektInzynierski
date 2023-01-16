@@ -31,7 +31,7 @@ export const orderDetailsReducer = (state = { loading: true, orderItems: [], shi
             return { loading: false, order: action.payload };
 
         case ORDER_DETAILS_FAIL:
-            return { loading: false, error: action.payload };
+            return { loading: false, error: action.payload, success: false };
 
         case ORDER_DETAILS_RESET:
             return { loading: false, orderItems: [], shippingAddress: {} };

@@ -24,14 +24,19 @@ orderRoute.post("/", protect, asyncHandler(async (req, res) => {
         const createOrder = await order.save();
         res.status(201).json(createOrder);
     } catch (error) {
+        res.status(500);
         throw new Error("Failed to create order.");
     }
 }));
 
 orderRoute.get("/", protect, asyncHandler(async (req, res) => {
-    const userOrders = await Order.find({ user: req.user._id }).sort({ _id: -1 });
-    // const userOrders = await Order.find({ user: req.user._id }).sort({ _id: -1 });
-    res.json(userOrders);
+    try {
+        const userOrders = await Order.find({ user: req.user.id }).sort({ _id: -1 });
+        res.status(200).json(userOrders);
+    } catch (e) {
+        res.status(500);
+        throw new Error("Failed to load user orders");
+    }
 }));
 
 orderRoute.get("/all", protect, adminAccess, asyncHandler(async (req, res) => {
@@ -57,7 +62,12 @@ orderRoute.get("/:id", protect, asyncHandler(async (req, res) => {
     }
 
     if (order) {
-        // console.log('have order')
+        const userIdFromRequest = req.user.id;
+        const userIdFromOrder = order.user.id;
+        if (userIdFromRequest !== userIdFromOrder) {
+            res.status(404);
+            throw new Error("Order not found.");
+        }
         res.status(200).json(order);
     } else {
         // console.log('not have order')
