@@ -7,18 +7,10 @@ export const register = (name, email, password) => async (dispatch) => {
     try {
         dispatch({ type: USER_REGISTER_REQUEST });
 
-        // const config = {
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     }
-        // }
-
         const { data } = await axios.post(`/api/users`, { name, email, password });
 
         dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
         dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
-
-        // localStorage.setItem("userInfo", JSON.stringify(data));
 
     } catch (error) {
         dispatch({
@@ -77,7 +69,10 @@ export const logout = () => (dispatch) => {
     dispatch({ type: ORDER_USER_LIST_RESET });
     dispatch({ type: USER_REGISTER_RESET });
     fetch(`/api/users/logout`);
-    window.location.assign('/login');
+    // window.location.assign('/login');
+    // document.location.href = "/login";
+    //chyba sam router robi robote
+
 };
 
 export const getUserDetails = () => async (dispatch, getState) => {
@@ -94,6 +89,7 @@ export const getUserDetails = () => async (dispatch, getState) => {
         // }
         // console.log('user details before')
         const { data } = await axios.get(`/api/users/profile`);
+        // throw new Error()
         dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
         // console.log('user details after')
 

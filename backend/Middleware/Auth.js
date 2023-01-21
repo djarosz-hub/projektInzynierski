@@ -1,9 +1,7 @@
 import jwt from "jsonwebtoken";
-import asyncHandler from 'express-async-handler';
 import User from '../Models/UserModel.js';
 
 const protect = async (req, res, next) => {
-    // console.log(req.session)
     if (!req.session && !req.session.token) {
         console.log('no session or no token')
         res.status(401);
@@ -16,47 +14,20 @@ const protect = async (req, res, next) => {
         console.log('success protect')
         next();
     } catch (e) {
-        // console.log(e)
         console.log('error protect');
         res.status(401);
         next(e);
     }
-
-
-    // console.log(decoded)
-    //not sending password
-    // console.log(req.user)
-
-
-    // let token;
-    // if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
-    //     try {
-    //         token = req.headers.authorization.split(" ")[1];
-    //         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    //         //not sending password
-    //         req.user = await User.findById(decoded.id).select("-password");
-    //         next();
-    //     } catch (error) {
-    //         console.error(error);
-    //         res.status(401);
-    //         throw new Error("Not authorized.");
-    //     }
-    // }
-
-    // if (!token) {
-    //     res.status(403)
-    //     throw new Error("Not authorized, no token.");
-    // }
 }
-// );
 
 export const adminAccess = (req, res, next) => {
-
     const user = req.user;
 
     if (user && user.isAdmin) {
+        console.log('admin correct')
         next();
     } else {
+        console.log('admin failed')
         res.status(401);
         throw new Error("Not an admin");
     }

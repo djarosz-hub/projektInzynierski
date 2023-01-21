@@ -30,8 +30,13 @@ productRoute.get("/", asyncHandler(async (req, res) => {
 
 // admin get all products
 productRoute.get("/all", protect, adminAccess, asyncHandler(async (req, res) => {
-    const products = await Product.find({}).sort({ _id: -1 });
-    res.json(products);
+    try {
+        const products = await Product.find({}).sort({ name: 1 }).collation({ locale: "en", caseLevel: true });
+        res.json(products);
+    } catch (e) {
+        res.status(500);
+        throw new Error("Products loading error");
+    }
 }));
 
 
@@ -110,26 +115,33 @@ productRoute.delete("/:id", protect, adminAccess, asyncHandler(async (req, res) 
 
 productRoute.post("/", protect, adminAccess, asyncHandler(async (req, res) => {
     const { name, price, description, image, countInStock } = req.body;
-    const productExists = await Product.findOne({ name });
+    if (!name || !price || !description || !image || !countInStock) {
+        res.status(400);
+        throw new Error("Invalid product data");
+    }
 
+    const productExists = await Product.findOne({ name });
+    
     if (productExists) {
         res.status(400);
         throw new Error("Product with this name already exists.");
     } else {
-        const product = new Product({
-            name,
-            price,
-            description,
-            image,
-            countInStock,
-            user: req.user._id
-        });
-
-        if (product) {
-            const createdProduct = await product.save();
-            res.status(201).json(createdProduct);
-        } else {
-            res.status(400);
+        try {
+            const product = new Product({
+                name,
+                price,
+                description,
+                image,
+                countInStock
+            });
+            if (product) {
+                const createdProduct = await product.save();
+                res.status(201).json(createdProduct);
+            } else {
+                throw new Error();
+            }
+        } catch (e) {
+            res.status(500);
             throw new Error("Product creation failed.");
         }
     }

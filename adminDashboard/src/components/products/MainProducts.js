@@ -61,7 +61,6 @@ const MainProducts = () => {
 
                 <div className="card-body">
                     {errorDelete && (<Message variant="alert-danger">{errorDelete}</Message>)}
-
                     {
                         loading ? (
                             <Loading />

@@ -30,7 +30,6 @@ const AddProductMain = () => {
 
     useEffect(() => {
         if (product) {
-            //todo
             toast.success("Product created.", ToastObjects);
             dispatch({ type: PRODUCT_CREATE_RESET });
             setName("");
@@ -39,11 +38,25 @@ const AddProductMain = () => {
             setDescription("");
             setImage("");
         }
+
+        return () => {
+            dispatch({ type: PRODUCT_CREATE_RESET })
+        }
     }, [product, dispatch]);
 
     const submitHandler = (e) => {
         e.preventDefault();
-        dispatch(createProduct(name, price, description, image, countInStock));
+
+        if (name.trim() === "" ||
+            (isNaN(price) || price == 0) ||
+            (isNaN(countInStock) || countInStock == 0) ||
+            description.trim() === "" ||
+            image.trim() === "") {
+
+            toast.error("Invalid product data", ToastObjects);
+        } else {
+            dispatch(createProduct(name, price, description, image, countInStock));
+        }
     };
 
     return (
@@ -128,6 +141,7 @@ const AddProductMain = () => {
                                             className="form-control"
                                             type="text"
                                             placeholder="Inter Image URL"
+                                            required
                                             value={image}
                                             onChange={(e) => setImage(e.target.value)}
                                         />
