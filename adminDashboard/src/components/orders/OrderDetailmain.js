@@ -24,12 +24,12 @@ const OrderDetailmain = (props) => {
     }, [dispatch, orderId, successDelivered]);
 
     const deliveredHandler = () => {
-        dispatch(markOrderDelivered(order));
+        dispatch(markOrderDelivered(orderId));
     }
 
     const unDeliveredHandler = () => {
         if (window.confirm('Do you want to mark order as undelivered?')) {
-            dispatch(markOrderDelivered(order));
+            dispatch(markOrderDelivered(orderId));
         }
     }
 

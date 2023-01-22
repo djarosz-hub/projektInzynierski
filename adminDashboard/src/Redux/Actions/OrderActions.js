@@ -5,10 +5,12 @@ import { logout } from "../Actions/UserActions";
 export const listOrders = () => async (dispatch) => {
 
     try {
+        console.log('try orders')
         dispatch({ type: ORDER_LIST_REQUEST });
         const { data } = await axios.get(`/api/orders/all`);
         dispatch({ type: ORDER_LIST_SUCCESS, payload: data });
     } catch (error) {
+        console.log(error)
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         if (error.response && error.response.status === 401) {
             dispatch(logout());
@@ -20,7 +22,7 @@ export const listOrders = () => async (dispatch) => {
     }
 };
 
-export const getOrderDetails = (id) => async (dispatch, getState) => {
+export const getOrderDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: ORDER_DETAILS_REQUEST });
         const { data } = await axios.get(`/api/orders/${id}`);
@@ -38,20 +40,10 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
     }
 };
 
-export const markOrderDelivered = (order) => async (dispatch, getState) => {
+export const markOrderDelivered = (orderId) => async (dispatch, getState) => {
     try {
         dispatch({ type: ORDER_DELIVERED_REQUEST });
-        const {
-            userLogin: { userInfo },
-        } = getState();
-
-        const config = {
-            headers: {
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
-
-        const { data } = await axios.put(`/api/orders/${order._id}/delivered`, {}, config);
+        const { data } = await axios.put(`/api/orders/${orderId}/delivered`);
         dispatch({ type: ORDER_DELIVERED_SUCCESS, payload: data });
 
     } catch (error) {
