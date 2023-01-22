@@ -8,7 +8,7 @@ import Loading from './../components/LoadingError/Loading';
 import Message from "../components/LoadingError/Error";
 import moment from 'moment';
 import axios from "axios";
-import { ORDER_DETAILS_RESET, ORDER_PAYMENT_RESET } from './../Redux/Constants/OrderConstants';
+import { ORDER_PAYMENT_RESET } from './../Redux/Constants/OrderConstants';
 import { toast } from "react-toastify";
 import Toast from './../components/LoadingError/Toast';
 
@@ -157,7 +157,7 @@ const OrderScreen = ({ match }) => {
                                                 order.isPaid ? (
                                                     <div className="bg-info p-2 col-12">
                                                         <p className="text-white text-center text-sm-start">
-                                                            Paid on {moment(order.paidAt).calendar()}
+                                                            Paid at: {moment(order.paidAt).format('HH:MM DD/MM/YYYY')}
                                                         </p>
                                                     </div>
                                                 ) : (
@@ -189,7 +189,7 @@ const OrderScreen = ({ match }) => {
                                                 order.isDelivered ? (
                                                     <div className="bg-info p-2 col-12">
                                                         <p className="text-white text-center text-sm-start">
-                                                            Delivered on {moment(order.deliveredAt).calendar()}
+                                                            Delivered on {moment(order.deliveredAt).format('DD/MM/YYYY')}
                                                         </p>
                                                     </div>
                                                 ) : (

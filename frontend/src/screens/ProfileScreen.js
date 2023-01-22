@@ -41,7 +41,7 @@ const ProfileScreen = () => {
                                         <strong>{userInfo?.name}</strong>
                                     </h5>
                                     <span className="author-card-position">
-                                        <>Joined {moment(userInfo?.createdAt).calendar()}</>
+                                        <>Joined {moment(userInfo?.createdAt).format('DD/MM/YYYY')}</>
                                     </span>
                                 </div>
                             </div>

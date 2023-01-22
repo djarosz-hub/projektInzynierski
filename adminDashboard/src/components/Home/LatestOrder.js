@@ -30,7 +30,7 @@ const LatestOrder = (props) => {
                                     <th scope="col">Email</th>
                                     <th scope="col">Total</th>
                                     <th scope="col">Paid</th>
-                                    <th scope="col">Date</th>
+                                    <th scope="col">Created at</th>
                                     <th scope="col">Status</th>
                                 </tr>
                             </thead>
@@ -49,7 +49,7 @@ const LatestOrder = (props) => {
                                                         {
                                                             order.isPaid ? (
                                                                 <span className="badge rounded-pill alert-success">
-                                                                    Paid At {moment(order.paidAt).calendar()}
+                                                                    Paid At {moment(order.paidAt).format('HH:MM DD/MM/YYYY')}
                                                                 </span>
                                                             ) : (
                                                                 <span className="badge rounded-pill alert-danger">
@@ -58,7 +58,7 @@ const LatestOrder = (props) => {
                                                             )
                                                         }
                                                     </td>
-                                                    <td>{moment(order.createdAt).calendar()}</td>
+                                                    <td>{moment(order.createdAt).format('HH:MM DD/MM/YYYY')}</td>
                                                     <td>
                                                         {
                                                             order.isDelivered ? (

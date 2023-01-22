@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Orders from "./Orders";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Loading from "../LoadingError/Loading";
 import Message from "../LoadingError/Error";
+import { listOrders } from "../../Redux/Actions/OrderActions";
 
 const OrderMain = () => {
 
+    const dispatch = useDispatch();
+
     const orderList = useSelector((state) => state.orderList);
     const { loading, error, orders } = orderList;
+
+    useEffect(() => {
+        dispatch(listOrders());
+    }, [dispatch]);
 
     return (
         <section className="content-main">

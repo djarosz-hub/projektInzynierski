@@ -52,7 +52,7 @@ const OrderDetailmain = (props) => {
                                 <div className="col-lg-6 col-md-6">
                                     <span>
                                         <i className="far fa-calendar-alt mx-2"></i>
-                                        <b className="text-white">{moment(order.createdAt).calendar()}</b>
+                                        <b className="text-white">Created at: {moment(order.createdAt).format('HH:MM DD/MM/YYYY')}</b>
                                     </span>
                                     <br />
                                     <small className="text-white mx-3 ">
@@ -81,7 +81,7 @@ const OrderDetailmain = (props) => {
                                                         loadingDelivered && <Loading />
                                                     }
                                                 <button onClick={unDeliveredHandler} className="btn btn-success col-12">
-                                                    Delivered: {" "} {moment(order.deliveredAt).calendar('DD/MM/YYYY')}
+                                                    Delivered: {" "} {moment(order.deliveredAt).format('DD/MM/YYYY')}
                                                 </button>
                                                 </>
                                             ) : (

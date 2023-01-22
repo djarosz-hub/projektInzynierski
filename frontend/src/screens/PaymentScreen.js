@@ -23,7 +23,7 @@ const PaymentScreen = ({ history }) => {
     if (!shippingAddress) {
         history.push("/shipping")
     }
-    //todo walidacja typu platnosci
+    
     const [paymentMethod, setPaymentMethod] = useState("PayPal");
 
     const dispatch = useDispatch();

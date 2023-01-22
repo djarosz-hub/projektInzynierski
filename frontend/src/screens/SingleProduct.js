@@ -134,7 +134,7 @@ const SingleProduct = ({ history, match }) => {
                                             <div key={review._id} className="mb-5 mb-md-3 bg-light p-3 shadow-sm rounded">
                                                 <strong>{review.name}</strong>
                                                 <Rating value={review.rating} />
-                                                <span>{moment(review.createdAt).calendar('DD/MM/YYYY')}</span>
+                                                <span>{moment(review.createdAt).format('DD/MM/YYYY')}</span>
                                                 <div className="alert alert-info mt-3">
                                                     {review.comment}
                                                 </div>
