@@ -18,17 +18,30 @@ const CartScreen = ({ match, location, history }) => {
 
     useEffect(() => {
         if (productId) {
-            dispatch(addToCart(productId, qty))
+            // dispatch(addToCart(productId, qty))
         }
     }, [dispatch, productId, qty])
 
     const checkoutHandler = (e) => {
         history.push("/login?redirect=shipping");
-    }
+    };
 
     const removeFromCartHandler = (id) => {
         dispatch(removeFromCart(id))
-    }
+    };
+
+    const decreaseQty = (productId, qty) => {
+        if (qty === 1) {
+            dispatch(removeFromCart(productId))
+        } else {
+            dispatch(addToCart(productId, qty - 1));
+        }
+    };
+
+    const increaseQty = (productId, qty) => {
+        dispatch(addToCart(productId, qty + 1));
+    };
+
 
     return (
         <>
@@ -73,14 +86,19 @@ const CartScreen = ({ match, location, history }) => {
                                             </Link>
                                         </div>
                                         <div className="cart-qty col-md-2 col-sm-5 mt-md-5 mt-3 mt-md-0 d-flex flex-column justify-content-center">
-                                            <h6>QUANTITY</h6>
-                                            <select value={item.qty} onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}>
+                                            <h6 className="qty-info-container-flex">QUANTITY</h6>
+                                            <div className="qty-info-container-flex">
+                                                <div className="qty-handler" onClick={() => decreaseQty(item.product, item.qty)}>-</div>
+                                                <input type="number" value={item.qty} disabled className="qty-input" />
+                                                <div className="qty-handler" onClick={() => increaseQty(item.product, item.qty)}>+</div>
+                                            </div>
+                                            {/* <select disabled className="disabled-select" value={item.qty} onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}>
                                                 {[...Array(item.countInStock).keys()].map((x) => (
                                                     <option key={x + 1} value={x + 1}>
                                                         {x + 1}
                                                     </option>
                                                 ))}
-                                            </select>
+                                            </select> */}
                                         </div>
                                         <div className="cart-price mt-3 mt-md-0 col-md-2 align-items-sm-end align-items-start  d-flex flex-column justify-content-center col-sm-7">
                                             <h6>PRICE</h6>

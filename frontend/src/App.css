@@ -493,6 +493,7 @@ textarea:focus {
   background-color: white;
   box-shadow: 0 12px 20px 1px rgba(64, 64, 64, 0.09);
   position: relative;
+  align-items: baseline;
 }
 
 .remove-button {
@@ -638,4 +639,38 @@ textarea:focus {
 .page-item.active .page-link {
   background-color: black;
   border: 1px solid black;
+}
+
+.disabled-select {
+ -webkit-appearance: none;
+ -moz-appearance: none;
+}
+
+.qty-input {
+    width: 50px;
+    height: 40px;
+    display:flex;
+    padding-left:15px;
+    border-color:rgba(0, 0, 0, 0.09);
+    border-radius: 5px;
+}
+
+.qty-handler{
+    width: 45px;
+    min-width: 45px;
+    height: 40px;
+    display:flex;
+    align-items: center;
+    padding-left:15px;
+    font-size:40px;
+    border-color:rgba(0, 0, 0, 0.09);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.qty-info-container-flex {
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }

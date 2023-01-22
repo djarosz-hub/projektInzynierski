@@ -8,9 +8,9 @@ import { createProductReview, listProductDetails } from "../Redux/Actions/Produc
 import Loading from './../components/LoadingError/Loading';
 import { PRODUCT_CREATE_REVIEW_RESET } from "../Redux/Constants/ProductConstants";
 import moment from 'moment';
+import { addToCart } from './../Redux/Actions/CartActions';
 
 const SingleProduct = ({ history, match }) => {
-    const [qty, setQty] = useState(1);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
     const [invalidFormDataError, setInvalidFormDataError] = useState("");
@@ -26,6 +26,9 @@ const SingleProduct = ({ history, match }) => {
 
     const productCreateReview = useSelector((state) => state.productCreateReview);
     const { loading: loadingCreateReview, error: errorCreateReview, success: successCreateReview } = productCreateReview;
+
+    const cart = useSelector((state) => state.cart);
+    const { cartItems } = cart;
 
     useEffect(() => {
         if (successCreateReview) {
@@ -44,7 +47,7 @@ const SingleProduct = ({ history, match }) => {
 
     const AddToCart = (e) => {
         e.preventDefault();
-        history.push(`/cart/${productId}?qty=${qty}`);
+        dispatch(addToCart(productId, 1));
     }
 
     const submitReviewHandler = (e) => {
@@ -101,21 +104,14 @@ const SingleProduct = ({ history, match }) => {
                                                     text={product.reviews.length > 1 ? `${product.reviews.length} reviews` : `${product.reviews.length} review`}
                                                 />
                                             </div>
-                                            {product.countInStock > 0 ? (
-                                                <>
-                                                    <div className="flex-box d-flex justify-content-between align-items-center">
-                                                        <h6>Quantity</h6>
-                                                        <select value={qty} onChange={(e) => setQty(e.target.value)}>
-                                                            {[...Array(product.countInStock).keys()].map((x) => (
-                                                                <option key={x + 1} value={x + 1}>
-                                                                    {x + 1}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                    </div>
-                                                    <button onClick={AddToCart} className="round-black-btn">Add To Cart</button>
-                                                </>
-                                            ) : null}
+                                            {
+                                                product.countInStock > 0 ?
+                                                    cartItems.filter(item => item.product === productId).length > 0 ? (
+                                                        <button disabled className="round-black-btn">Already in cart</button>
+                                                    ) : (
+                                                        <button onClick={AddToCart} className="round-black-btn">Add To Cart</button>
+                                                    ) : null
+                                            }
                                         </div>
                                     </div>
                                 </div>

@@ -7,6 +7,7 @@ const productRoute = express.Router();
 
 //ADMIN ROUTES
 productRoute.get("/all", protect, adminAccess, asyncHandler(async (req, res) => {
+    console.log('all products get')
     try {
         const products = await Product.find({}).sort({ name: 1 }).collation({ locale: "en", caseLevel: true });
         res.json(products);
@@ -119,7 +120,36 @@ productRoute.put("/:id", protect, adminAccess, asyncHandler(async (req, res) => 
 //ADMIN ROUTES END
 
 //COMMON ROUTES
+
+productRoute.get("/productCount", protect, asyncHandler(async (req,res) => {
+    console.log('products test')
+    const productsToCheck = req.body;
+    console.log(productsToCheck)
+    console.log(Array.isArray(productsToCheck))
+    if(!productsToCheck || !Array.isArray(productsToCheck)) {
+        res.status(400);
+        throw new Error("Invalid product data");
+    }
+    try {
+        const productCountObj = {};
+        const getProductData = (productId) => new Promise(resolve => resolve(Product.findById(productId)));
+        const checkAllProducts = async() => {
+            for (const productId of productsToCheck) {
+                const product = await getProductData(productId);
+                productCountObj[productId] = product.countInStock;
+            }
+            res.status(200).json(productCountObj)
+        }
+        checkAllProducts();
+    } catch (e) {
+        res.status(500);
+        throw new Error("Internal Server error");
+    }
+}));
+
+
 productRoute.get("/:id", asyncHandler(async (req, res) => {
+    // console.log('test')
     try {
         const product = await Product.findById(req.params.id);
         // console.log('after')
