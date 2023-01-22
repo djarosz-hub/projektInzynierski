@@ -40,8 +40,13 @@ orderRoute.get("/", protect, asyncHandler(async (req, res) => {
 }));
 
 orderRoute.get("/all", protect, adminAccess, asyncHandler(async (req, res) => {
-    const orders = await Order.find({}).sort({ _id: -1 }).populate("user", "id name email");
-    res.json(orders);
+    try {
+        const orders = await Order.find({}).sort({ createdAt: -1 }).collation({ locale: "en", caseLevel: true }).populate("user", "id name email");
+        res.status(200).json(orders);
+    } catch (e) {
+        res.status(500);
+        throw new Error('Internal Server error');
+    }
 }));
 
 orderRoute.get("/:id", protect, asyncHandler(async (req, res) => {
@@ -62,9 +67,10 @@ orderRoute.get("/:id", protect, asyncHandler(async (req, res) => {
     }
 
     if (order) {
-        const userIdFromRequest = req.user.id;
-        const userIdFromOrder = order.user.id;
-        if (userIdFromRequest !== userIdFromOrder) {
+        const userIdFromRequest = req?.user?.id;
+        const userIdFromOrder = order?.user?.id;
+        const isAdmin = req?.user?.isAdmin;
+        if (userIdFromRequest !== userIdFromOrder && !isAdmin) {
             res.status(404);
             throw new Error("Order not found.");
         }
@@ -127,18 +133,35 @@ orderRoute.put("/:id/payment", protect, asyncHandler(async (req, res) => {
 
 orderRoute.put("/:id/delivered", protect, adminAccess, asyncHandler(async (req, res) => {
 
-    const order = await Order.findById(req.params.id);
+    const orderId = req?.params?.id;
+    if (!orderId) {
+        res.status(400);
+        throw new Error("Invalid order id");
+    }
 
-    if (order) {
-        order.isDelivered = true;
+    let order = null;
+
+    try {
+        order = await Order.findById(orderId);
+    } catch (e) {
+        res.status(500);
+        throw new Error("Internal Server error");
+    }
+
+    if (!order) {
+        res.status(404);
+        throw new Error("Order not found");
+    }
+
+    try {
+        order.isDelivered = !order?.isDelivered;
         order.deliveredAt = Date.now();
 
         const updatedOrder = await order.save();
         res.json(updatedOrder);
-
-    } else {
-        res.status(404);
-        throw new Error("Order not found.");
+    } catch (e) {
+        res.status(500);
+        throw new Error("Internal Server error");
     }
 }));
 

@@ -47,11 +47,11 @@ const AddProductMain = () => {
     const submitHandler = (e) => {
         e.preventDefault();
 
-        if (name.trim() === "" ||
-            (isNaN(price) || price == 0) ||
-            (isNaN(countInStock) || countInStock == 0) ||
-            description.trim() === "" ||
-            image.trim() === "") {
+        if ((!name || name.trim() === "") ||
+            (isNaN(price) || price <= 0) ||
+            (isNaN(countInStock) || countInStock < 0) ||
+            (!description || description.trim() === "") ||
+            (!image || image.trim() === "")) {
 
             toast.error("Invalid product data", ToastObjects);
         } else {
@@ -76,7 +76,7 @@ const AddProductMain = () => {
                         </div>
                     </div>
 
-                    <div className="row mb-4">
+                    <div className="row mb-4 centeredFlex">
                         <div className="col-xl-8 col-lg-8">
                             <div className="card mb-4 shadow-sm">
                                 <div className="card-body">
@@ -106,6 +106,8 @@ const AddProductMain = () => {
                                             className="form-control"
                                             id="product_price"
                                             required
+                                            min="0"
+                                            step="0.01"
                                             value={price}
                                             onChange={(e) => setPrice(e.target.value)}
                                         />
@@ -120,6 +122,7 @@ const AddProductMain = () => {
                                             className="form-control"
                                             id="product_price"
                                             required
+                                            min="0"
                                             value={countInStock}
                                             onChange={(e) => setCountInStock(e.target.value)}
                                         />

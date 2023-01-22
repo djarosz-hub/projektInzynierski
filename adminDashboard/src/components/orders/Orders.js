@@ -35,7 +35,7 @@ const Orders = (props) => {
                                 {
                                     order.isPaid ? (
                                         <span className="badge rounded-pill alert-success">
-                                            Paid at {moment(order.paidAt).calendar()}
+                                            Paid at {moment(order.paidAt).format('HH:MM DD/MM/YYYY')}
                                         </span>
                                     ) : (
                                         <span className="badge rounded-pill alert-danger">
@@ -44,7 +44,7 @@ const Orders = (props) => {
                                     )
                                 }
                             </td>
-                            <td>{moment(order.createdAt).calendar()}</td>
+                            <td>{moment(order.createdAt).format('HH:MM DD/MM/YYYY')}</td>
                             <td>
                                 {
                                     order.isDelivered ? (

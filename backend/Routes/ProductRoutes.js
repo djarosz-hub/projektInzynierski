@@ -102,26 +102,36 @@ productRoute.post("/:id/review", protect, asyncHandler(async (req, res) => {
 }));
 
 productRoute.delete("/:id", protect, adminAccess, asyncHandler(async (req, res) => {
-    const product = await Product.findById(req.params.id);
-    if (product) {
-        await product.remove();
-        res.json({ message: "Product deleted." });
-    } else {
+
+    const productId = req?.params?.id;
+    if (!productId) {
         res.status(404);
-        throw new Error("Product not Found.");
+        throw new Error("Product not found");
     }
 
+    try {
+        const product = await Product.findById(productId);
+        if (product) {
+            await product.remove();
+            res.status(200).json({ message: "Product deleted" });
+        } else {
+            throw new Error();
+        }
+    } catch (e) {
+        res.status(500);
+        throw new Error("Product remove failed");
+    }
 }));
 
 productRoute.post("/", protect, adminAccess, asyncHandler(async (req, res) => {
     const { name, price, description, image, countInStock } = req.body;
-    if (!name || !price || !description || !image || !countInStock) {
+    if (!name || (!price || price < 0) || !description || !image || countInStock < 0) {
         res.status(400);
         throw new Error("Invalid product data");
     }
 
     const productExists = await Product.findOne({ name });
-    
+
     if (productExists) {
         res.status(400);
         throw new Error("Product with this name already exists.");
@@ -148,11 +158,35 @@ productRoute.post("/", protect, adminAccess, asyncHandler(async (req, res) => {
 }));
 
 productRoute.put("/:id", protect, adminAccess, asyncHandler(async (req, res) => {
-    const { name, price, description, image, countInStock } = req.body.product;
-    //todo walidacja name
-    const product = await Product.findById(req.params.id);
+    const { _id, name, price, description, image, countInStock } = req.body.product;
 
-    if (product) {
+    if (!name || (!price || price < 0) || !description || !image || countInStock < 0 || _id != req.params.id) {
+        res.status(400);
+        throw new Error("Invalid product data");
+    }
+
+    let product = null;
+    let newNameProduct = null;
+
+    try {
+        product = await Product.findById(_id);
+        newNameProduct = await Product.findOne({ name: name });
+    } catch (e) {
+        res.status(500);
+        throw new Error("Internal Server error");
+    }
+
+    if (!product) {
+        res.status(404);
+        throw new Error("Invalid product");
+    }
+
+    if (newNameProduct && name !== product.name) {
+        res.status(404);
+        throw new Error(`Product with name: '${name}' already exists, choose another name`);
+    }
+
+    try {
         product.name = name || product.name;
         product.price = price || product.price;
         product.description = description || product.description;
@@ -161,9 +195,9 @@ productRoute.put("/:id", protect, adminAccess, asyncHandler(async (req, res) => 
 
         const updatedProduct = await product.save();
         res.status(200).json(updatedProduct);
-    } else {
-        res.status(404);
-        throw new Error("Invalid product.");
+    } catch (e) {
+        res.status(500);
+        throw new Error("Internal Server error");
     }
 }));
 

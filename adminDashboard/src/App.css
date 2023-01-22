@@ -883,3 +883,7 @@ ul.row-sm {
   line-height: 0.7;
   vertical-align: bottom;
 }
+
+.centeredFlex {
+    justify-content: center;
+}

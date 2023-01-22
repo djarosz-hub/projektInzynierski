@@ -36,24 +36,15 @@ export const createProduct = (name, price, description, image, countInStock) => 
     }
 };
 
-export const updateProduct = (product) => async (dispatch, getState) => {
+export const updateProduct = (product) => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_UPDATE_REQUEST });
-
-        const { userLogin: { userInfo } } = getState();
-        const config = {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        };
-
-        const { data } = await axios.put(`/api/products/${product._id}`, { product }, config);
+        const { data } = await axios.put(`/api/products/${product._id}`, { product });
         dispatch({ type: PRODUCT_UPDATE_SUCCESS, payload: data });
         dispatch({ type: PRODUCT_EDIT_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        if (message === "Not authorized, token invalid") {
+        if (error.response && error.response.status === 401) {
             dispatch(logout());
         }
         dispatch({
@@ -74,7 +65,7 @@ export const editProduct = (id) => async (dispatch) => {
 
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        if (message === "Not authorized, token invalid") {
+        if (error.response && error.response.status === 401) {
             dispatch(logout());
         }
         dispatch({
@@ -84,24 +75,15 @@ export const editProduct = (id) => async (dispatch) => {
     }
 }
 
-export const deleteProduct = (id) => async (dispatch, getState) => {
+export const deleteProduct = (id) => async (dispatch) => {
 
     try {
         dispatch({ type: PRODUCT_DELETE_REQUEST });
-
-        const { userLogin: { userInfo } } = getState();
-        const config = {
-            headers: {
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        };
-
-        await axios.delete(`/api/products/${id}`, config);
+        await axios.delete(`/api/products/${id}`);
         dispatch({ type: PRODUCT_DELETE_SUCCESS });
-
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        if (message === "Not authorized, token invalid") {
+        if (error.response && error.response.status === 401) {
             dispatch(logout());
         }
         dispatch({

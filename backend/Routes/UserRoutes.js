@@ -72,10 +72,14 @@ userRoute.post("/login", asyncHandler(async (req, res) => {
 }));
 
 userRoute.get("/logout", (req, res) => {
-    if (req.session) {
-        req.session.destroy();
+    try {
+        if (req.session) {
+            req.session.destroy();
+        }
+        res.status(200);
+    } catch (error) {
+        res.status(400);
     }
-    res.status(200);
 });
 
 userRoute.post("/", asyncHandler(async (req, res) => {
@@ -184,8 +188,13 @@ userRoute.put("/profile",
 );
 
 userRoute.get("/", protect, adminAccess, asyncHandler(async (req, res) => {
-    const users = await User.find({});
-    res.json(users);
+    try {
+        const users = await User.find({});
+        res.status(200).json(users);
+    } catch (e) {
+        res.status(500);
+        throw new Error("Internal Server error");
+    }
 }))
 
 export default userRoute;

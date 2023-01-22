@@ -52,14 +52,24 @@ const EditProductMain = (props) => {
 
     const submitHandler = (e) => {
         e.preventDefault();
-        dispatch(updateProduct({
-            _id: productId,
-            name,
-            price,
-            description,
-            image,
-            countInStock
-        }));
+
+        if ((!name || name.trim() === "") ||
+            (isNaN(price) || price <= 0) ||
+            (isNaN(countInStock) || countInStock < 0) ||
+            (!description || description.trim() === "") ||
+            (!image || image.trim() === "")) {
+
+            toast.error("Invalid product data", ToastObjects);
+        } else {
+            dispatch(updateProduct({
+                _id: productId,
+                name,
+                price,
+                description,
+                image,
+                countInStock
+            }));
+        }
     };
 
     return (
@@ -74,12 +84,12 @@ const EditProductMain = (props) => {
                         <h2 className="content-title">Update Product</h2>
                         <div>
                             <button type="submit" className="btn btn-primary">
-                                Publish now
+                                Save updated
                             </button>
                         </div>
                     </div>
 
-                    <div className="row mb-4">
+                    <div className="row mb-4 centeredFlex">
                         <div className="col-xl-8 col-lg-8">
                             <div className="card mb-4 shadow-sm">
                                 <div className="card-body">
@@ -116,6 +126,8 @@ const EditProductMain = (props) => {
                                                         className="form-control"
                                                         id="product_price"
                                                         required
+                                                        min="0"
+                                                        step="0.01"
                                                         value={price}
                                                         onChange={(e) => setPrice(e.target.value)}
                                                     />
@@ -130,6 +142,7 @@ const EditProductMain = (props) => {
                                                         className="form-control"
                                                         id="product_price"
                                                         required
+                                                        min="0"
                                                         value={countInStock}
                                                         onChange={(e) => setCountInStock(e.target.value)}
                                                     />
@@ -150,6 +163,7 @@ const EditProductMain = (props) => {
                                                     <input
                                                         className="form-control"
                                                         type="text"
+                                                        required
                                                         value={image}
                                                         onChange={(e) => setImage(e.target.value)}
                                                     />

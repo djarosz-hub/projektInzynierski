@@ -27,6 +27,12 @@ const OrderDetailmain = (props) => {
         dispatch(markOrderDelivered(order));
     }
 
+    const unDeliveredHandler = () => {
+        if (window.confirm('Do you want to mark order as undelivered?')) {
+            dispatch(markOrderDelivered(order));
+        }
+    }
+
     return (
         <section className="content-main">
             <div className="content-header">
@@ -70,9 +76,14 @@ const OrderDetailmain = (props) => {
                                     <div className="box shadow-sm bg-light">
                                         {
                                             order.isDelivered ? (
-                                                <button className="btn btn-success col-12" disabled>
+                                                <>
+                                                    {
+                                                        loadingDelivered && <Loading />
+                                                    }
+                                                <button onClick={unDeliveredHandler} className="btn btn-success col-12">
                                                     Delivered: {" "} {moment(order.deliveredAt).calendar('DD/MM/YYYY')}
                                                 </button>
+                                                </>
                                             ) : (
                                                 <>
                                                     {

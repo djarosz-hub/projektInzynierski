@@ -2,24 +2,15 @@ import { ORDER_DELIVERED_FAIL, ORDER_DELIVERED_REQUEST, ORDER_DELIVERED_SUCCESS,
 import axios from 'axios';
 import { logout } from "../Actions/UserActions";
 
-export const listOrders = () => async (dispatch, getState) => {
+export const listOrders = () => async (dispatch) => {
 
     try {
         dispatch({ type: ORDER_LIST_REQUEST });
-
-        const { userLogin: { userInfo } } = getState();
-        const config = {
-            headers: {
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        };
-
-        const { data } = await axios.get(`/api/orders/all`, config);
+        const { data } = await axios.get(`/api/orders/all`);
         dispatch({ type: ORDER_LIST_SUCCESS, payload: data });
-
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        if (message === "Not authorized, token invalid") {
+        if (error.response && error.response.status === 401) {
             dispatch(logout());
         }
         dispatch({
