@@ -2,6 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import protect, { adminAccess } from '../Middleware/Auth.js';
 import Order from './../Models/OrderModel.js';
+import Product from './../Models/ProductModel.js';
 
 const orderRoute = express.Router();
 
@@ -98,14 +99,74 @@ orderRoute.post("/", protect, asyncHandler(async (req, res) => {
 
     if (!orderItems || orderItems.length === 0 || !shippingAddress || !paymentMethod || !itemsPrice || !shippingPrice || !totalPrice) {
         res.status(400);
-        throw new Error("Invalid order data.");
+        throw new Error("Invalid order data");
+    }
+
+    const initialProductValues = {};
+
+    const getProduct = (productId) => new Promise(resolve => resolve(Product.findById(productId)));
+
+    const updateProductInfo = (product) => new Promise(resolve => resolve(product.save()));
+
+    const updateProductStock = async () => {
+        for (const item of orderItems) {
+            const product = await getProduct(item.product);
+
+            if (product.countInStock < item.qty) {
+                // console.log(`error count: ${product.countInStock} and qty: ${item.qty}`)
+                throw new Error();
+            }
+
+            initialProductValues[product._id] = {
+                countInStock: product.countInStock,
+                totalSold: product.totalSold
+            }
+
+            product.countInStock = product.countInStock - item.qty;
+            product.totalSold += item.qty;
+            await updateProductInfo(product);
+        }
+    };
+
+    const backupProductStock = async () => {
+        try {
+            for (const productId in initialProductValues) {
+                // console.log('initial backup: ' + productId)
+                const product = await getProduct(productId);
+                // console.log('get product: ' + productId)
+                product.countInStock = initialProductValues[productId].countInStock;
+                product.totalSold = initialProductValues[productId].totalSold;
+                await updateProductInfo(product);
+                // console.log('updated' + productId)
+            }
+        } catch (e) {
+            res.status(500);
+            throw new Error('Internal Server error');
+        }
     }
 
     try {
+        await updateProductStock();
+    } catch (e) {
+        await backupProductStock();
+        res.status(500);
+        throw new Error('Internal Server error')
+    }
+    // console.log('before backup')
+    // await backupProductStock();
+    // console.log('after backup')
+
+    // console.log('initial products:')
+    // console.log(initialProductValues);
+
+    try {
+        // throw new Error();
         const order = new Order({ user: req.user._id, orderItems, shippingAddress, paymentMethod, itemsPrice, shippingPrice, totalPrice });
         const createOrder = await order.save();
         res.status(201).json(createOrder);
     } catch (error) {
+        // console.log('order fail')
+        await backupProductStock();
         res.status(500);
         throw new Error("Failed to create order.");
     }

@@ -35,7 +35,33 @@ const PlaceOrderScreen = ({ history }) => {
     cart.totalPrice = (+cart.itemsPrice + +cart.shippingPrice).toFixed(2);
 
     useEffect(() => {
-        console.log('effect')
+        console.log('effect 1')
+        // console.log(`${successValidation} ${order} ${successValidation}`)
+        // if (successValidation) {
+        //     console.log('success validation')
+        //     dispatch(createOrder({
+        //         orderItems: cart.cartItems,
+        //         shippingAddress: cart.shippingAddress,
+        //         paymentMethod: cart.paymentMethod,
+        //         itemsPrice: cart.itemsPrice,
+        //         shippingPrice: cart.shippingPrice,
+        //         totalPrice: cart.totalPrice,
+        //     }));
+        // }
+        if (success) {
+            console.log('succes created')
+            // history.push(`/order/${order._id}`);
+            window.location.assign(`/order/${order._id}`);
+            // dispatch({ type: ORDER_CREATE_RESET });
+        }
+        return () => {
+            dispatch({type: ORDER_CREATE_RESET})
+        }
+    // }, [dispatch, success, order, history, successValidation]);
+    }, [dispatch, success]);
+
+    useEffect(() => {
+        console.log('effect 2')
         if (successValidation) {
             console.log('success validation')
             dispatch(createOrder({
@@ -47,20 +73,11 @@ const PlaceOrderScreen = ({ history }) => {
                 totalPrice: cart.totalPrice,
             }));
         }
-        if (success) {
-            console.log('succes created')
-            // history.push(`/order/${order._id}`);
-            window.location.assign(`/order/${order._id}`);
-            // dispatch({ type: ORDER_CREATE_RESET });
+        return () => {
+            console.log('reset countcheck')
+            dispatch({type: ORDER_COUNTCHECK_RESET})
         }
-    }, [dispatch, success, order, history, successValidation]);
-
-    // niepotrzebne bo odswiezamy strone
-    // useEffect(() => {
-    //     return () => {
-    //         dispatch({ type: ORDER_COUNTCHECK_RESET });
-    //     }
-    // }, []);
+    }, [dispatch, successValidation]);
 
     const placeOrderHandler = (e) => {
         e.preventDefault();

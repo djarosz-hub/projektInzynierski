@@ -138,7 +138,7 @@ productRoute.post("/productCount", protect, asyncHandler(async (req, res) => {
             }
             res.status(200).json(productCountObj)
         }
-        checkAllProducts();
+        await checkAllProducts();
     } catch (e) {
         res.status(500);
         throw new Error("Internal Server error");

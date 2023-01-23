@@ -49,6 +49,7 @@ export const validateOrderItemsAvailability = (items) => async (dispatch) => {
 };
 
 export const createOrder = (order) => async (dispatch) => {
+    // console.log('createorder fired');
     try {
         dispatch({ type: ORDER_CREATE_REQUEST });
 
