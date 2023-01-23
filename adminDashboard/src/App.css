@@ -887,3 +887,16 @@ ul.row-sm {
 .centeredFlex {
     justify-content: center;
 }
+
+.top-space {
+    margin-top:15px;
+}
+
+.btn-cancel {
+    background-color: rgb(201, 50, 50);
+    color: #fff;
+}
+
+.btn-cancel:hover {
+    background-color: rgb(108, 34, 34);
+}

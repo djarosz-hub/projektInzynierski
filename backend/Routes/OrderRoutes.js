@@ -6,7 +6,10 @@ import Product from './../Models/ProductModel.js';
 
 const orderRoute = express.Router();
 
+//COMMON FUNCTIONS
+const getProduct = (productId) => new Promise(resolve => resolve(Product.findById(productId)));
 
+const updateProductInfo = (product) => new Promise(resolve => resolve(product.save()));
 
 //ADMIN ROUTES
 orderRoute.get("/all", protect, adminAccess, asyncHandler(async (req, res) => {
@@ -46,12 +49,70 @@ orderRoute.put("/:id/delivered", protect, adminAccess, asyncHandler(async (req, 
         order.isDelivered = !order?.isDelivered;
         order.deliveredAt = Date.now();
 
-        const updatedOrder = await order.save();
-        res.json(updatedOrder);
+        // const updatedOrder = 
+        await order.save();
+        // res.json(updatedOrder);
+        res.status(200).json({});
+        return;
     } catch (e) {
         res.status(500);
         throw new Error("Internal Server error");
     }
+}));
+
+orderRoute.put("/:id/cancel", protect, adminAccess, asyncHandler(async (req, res) => {
+
+    const orderId = req?.params?.id;
+    if (!orderId) {
+        res.status(400);
+        throw new Error("Invalid order id");
+    }
+
+    let order = null;
+
+    try {
+        order = await Order.findById(orderId);
+    } catch (e) {
+        res.status(500);
+        throw new Error("Internal Server error");
+    }
+
+    if (!order) {
+        res.status(404);
+        throw new Error("Order not found");
+    }
+    console.log(order.orderItems)
+    try {
+        order.isCancelled = true;
+        await order.save();
+    } catch (e) {
+        res.status(500);
+        throw new Error("Internal Server error");
+    }
+
+    const updateProductStock = async () => {
+        for (const item of order.orderItems) {
+            console.log(`updating: ${item.product}`)
+            const product = await getProduct(item.product);
+
+            product.countInStock += item.qty;
+            product.totalSold -= item.qty;
+            await updateProductInfo(product);
+            console.log(`updated ${item.product}`)
+        }
+        console.log('updated all products from order')
+    };
+    try {
+        await updateProductStock();
+    } catch (e) {
+        console.log('failed update stock')
+        order.isCancelled = false;
+        await order.save();
+        res.status(500);
+        throw new Error('Failed to cancel order');
+    }
+    console.log('all fine')
+    res.status(200).json({})
 }));
 
 //ADMIN ROUTES END
@@ -101,12 +162,8 @@ orderRoute.post("/", protect, asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error("Invalid order data");
     }
-
+    // console.log(orderItems)
     const initialProductValues = {};
-
-    const getProduct = (productId) => new Promise(resolve => resolve(Product.findById(productId)));
-
-    const updateProductInfo = (product) => new Promise(resolve => resolve(product.save()));
 
     const updateProductStock = async () => {
         for (const item of orderItems) {

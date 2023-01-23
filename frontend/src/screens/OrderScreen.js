@@ -35,7 +35,7 @@ const OrderScreen = ({ match }) => {
     const orderPayment = useSelector((state) => state.orderPayment);
     const { loading: loadingPayment, success: successPayment, error: errorPayment } = orderPayment;
 
-    const formattedAddress = `${order?.shippingAddress?.address} ${order?.shippingAddress?.postalCode} ${order?.shippingAddress?.city}`;
+    // const formattedAddress = `${order?.shippingAddress?.address} ${order?.shippingAddress?.postalCode} ${order?.shippingAddress?.city}`;
 
     if (!loading && order) {
         const addDecimals = (num) => {
@@ -82,11 +82,12 @@ const OrderScreen = ({ match }) => {
                     toastId.current = toast.error(`Payment error: ${errorPayment}, please contact us. `, ToastObjects);
                 }
             }
-
-            if (!window.paypal) {
-                addPayPalScript();
-            } else {
-                setSdkReady(true);
+            if (!order.isCancelled) {
+                if (!window.paypal) {
+                    addPayPalScript();
+                } else {
+                    setSdkReady(true);
+                }
             }
         }
         // return () => {
@@ -180,10 +181,14 @@ const OrderScreen = ({ match }) => {
                                         </div>
                                         <div className="col-md-8 center">
                                             <h5>
-                                                <strong>Deliver to</strong>
+                                                <strong>Deliver to:</strong>
                                             </h5>
                                             <p>
-                                                Address: {formattedAddress}
+                                                {/* Address: {formattedAddress} */}
+                                                {order?.shippingAddress?.address}
+                                            </p>
+                                            <p>
+                                                {order?.shippingAddress?.postalCode} {order?.shippingAddress?.city}
                                             </p>
                                             {
                                                 order.isDelivered ? (
@@ -212,6 +217,7 @@ const OrderScreen = ({ match }) => {
                                             <Message variant="alert-info mt-5">Your order is empty</Message>
                                         ) : (
                                             <>
+                                                {order.isCancelled && <Message variant="alert-danger mt-5">This order has been cancelled.</Message>}
                                                 {
                                                     order.orderItems.map((item, index) => (
                                                         <div key={index} className="order-product row">
@@ -262,7 +268,7 @@ const OrderScreen = ({ match }) => {
                                         </tbody>
                                     </table>
                                     {
-                                        !order.isPaid && (
+                                        (!order.isPaid && !order.isCancelled) && (
                                             <div className="col-12">
                                                 {loadingPayment && (<Loading />)}
                                                 {

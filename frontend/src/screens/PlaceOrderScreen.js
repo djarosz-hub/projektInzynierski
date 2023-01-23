@@ -7,7 +7,7 @@ import { ORDER_COUNTCHECK_RESET, ORDER_CREATE_RESET } from "../Redux/Constants/O
 import { createOrder, validateOrderItemsAvailability } from "../Redux/Actions/OrderActions";
 import Loading from "../components/LoadingError/Loading";
 
-const PlaceOrderScreen = ({ history }) => {
+const PlaceOrderScreen = () => {
     window.scrollTo(0, 0);
 
     const dispatch = useDispatch();
@@ -28,14 +28,14 @@ const PlaceOrderScreen = ({ history }) => {
         return (Math.round(num * 100) / 100).toFixed(2);
     };
     cart.itemsPrice = addDecimals(
-        cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
+        cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0).toFixed(2)
     );
 
     cart.shippingPrice = (cart.itemsPrice > 100 ? 0 : 10).toFixed(2);
     cart.totalPrice = (+cart.itemsPrice + +cart.shippingPrice).toFixed(2);
 
     useEffect(() => {
-        console.log('effect 1')
+        // console.log('effect 1')
         // console.log(`${successValidation} ${order} ${successValidation}`)
         // if (successValidation) {
         //     console.log('success validation')
@@ -49,7 +49,7 @@ const PlaceOrderScreen = ({ history }) => {
         //     }));
         // }
         if (success) {
-            console.log('succes created')
+            // console.log('succes created')
             // history.push(`/order/${order._id}`);
             window.location.assign(`/order/${order._id}`);
             // dispatch({ type: ORDER_CREATE_RESET });
@@ -61,9 +61,9 @@ const PlaceOrderScreen = ({ history }) => {
     }, [dispatch, success]);
 
     useEffect(() => {
-        console.log('effect 2')
+        // console.log('effect 2')
         if (successValidation) {
-            console.log('success validation')
+            // console.log('success validation')
             dispatch(createOrder({
                 orderItems: cart.cartItems,
                 shippingAddress: cart.shippingAddress,
@@ -74,7 +74,7 @@ const PlaceOrderScreen = ({ history }) => {
             }));
         }
         return () => {
-            console.log('reset countcheck')
+            // console.log('reset countcheck')
             dispatch({type: ORDER_COUNTCHECK_RESET})
         }
     }, [dispatch, successValidation]);

@@ -3,10 +3,11 @@ import OrderDetailProducts from "./OrderDetailProducts";
 import OrderDetailInfo from "./OrderDetailInfo";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { getOrderDetails, markOrderDelivered } from "../../Redux/Actions/OrderActions";
+import { getOrderDetails, markOrderCancelled, markOrderDelivered } from "../../Redux/Actions/OrderActions";
 import Loading from './../LoadingError/Loading';
 import Message from './../LoadingError/Error';
 import moment from 'moment';
+import { ORDER_CANCEL_RESET, ORDER_DELIVERED_RESET } from "../../Redux/Constants/OrderConstants";
 
 const OrderDetailmain = (props) => {
 
@@ -17,21 +18,35 @@ const OrderDetailmain = (props) => {
     const { loading, error, order } = orderDetails;
 
     const orderDeliver = useSelector((state) => state.orderDeliver);
-    const { loading: loadingDelivered, success: successDelivered } = orderDeliver;
+    const { loading: loadingDelivered, success: successDelivered, error: errorDelivered } = orderDeliver;
+
+    const orderCancel = useSelector((state) => state.orderCancel);
+    const { loading: loadingCancel, success: successCancel, error: errorCancelled } = orderCancel;
 
     useEffect(() => {
         dispatch(getOrderDetails(orderId))
-    }, [dispatch, orderId, successDelivered]);
+
+        return () => {
+            dispatch({ type: ORDER_CANCEL_RESET });
+            dispatch({ type: ORDER_DELIVERED_RESET });
+        }
+    }, [dispatch, orderId, successDelivered, successCancel]);
 
     const deliveredHandler = () => {
         dispatch(markOrderDelivered(orderId));
-    }
+    };
 
     const unDeliveredHandler = () => {
         if (window.confirm('Do you want to mark order as undelivered?')) {
             dispatch(markOrderDelivered(orderId));
         }
-    }
+    };
+
+    const cancelHandler = () => {
+        if (window.confirm('Do you want to cancel order? This operation is irreversible.')) {
+            dispatch(markOrderCancelled(orderId));
+        }
+    };
 
     return (
         <section className="content-main">
@@ -71,18 +86,18 @@ const OrderDetailmain = (props) => {
                                         <OrderDetailProducts order={order} loading={loading} />
                                     </div>
                                 </div>
-                                {/* Payment Info */}
+                                {/* Delivery and cancellation info */}
                                 <div className="col-lg-3">
-                                    <div className="box shadow-sm bg-light">
+                                    {/* <div className="box shadow-sm bg-light">
                                         {
                                             order.isDelivered ? (
                                                 <>
                                                     {
                                                         loadingDelivered && <Loading />
                                                     }
-                                                <button onClick={unDeliveredHandler} className="btn btn-success col-12">
-                                                    Delivered: {" "} {moment(order.deliveredAt).format('DD/MM/YYYY')}
-                                                </button>
+                                                    <button onClick={unDeliveredHandler} className="btn btn-success col-12">
+                                                        Delivered at {" "} {moment(order.deliveredAt).format('DD/MM/YYYY')}
+                                                    </button>
                                                 </>
                                             ) : (
                                                 <>
@@ -95,7 +110,65 @@ const OrderDetailmain = (props) => {
                                                 </>
                                             )
                                         }
-                                    </div>
+                                    </div> */}
+                                    {
+                                        order.isDelivered && (
+                                            <div className="box shadow-sm bg-light top-space">
+
+                                                {
+                                                    loadingDelivered && <Loading />
+                                                }
+                                                {
+                                                    errorDelivered && <Message variant="alert-danger">{errorDelivered}</Message>
+                                                }
+                                                <button onClick={unDeliveredHandler} className="btn btn-success col-12">
+                                                    Delivered at {" "} {moment(order.deliveredAt).format('DD/MM/YYYY')}
+                                                </button>
+                                            </div>
+                                        )
+                                    }
+
+                                    {
+                                        (!order.isDelivered && !order.isCancelled) && (
+                                            <div className="box shadow-sm bg-light top-space">
+                                                {
+                                                    loadingDelivered && <Loading />
+                                                }
+                                                {
+                                                    errorDelivered && <Message variant="alert-danger">{errorDelivered}</Message>
+                                                }
+                                                <button onClick={deliveredHandler} className="btn btn-dark col-12">
+                                                    MARK AS DELIVERED
+                                                </button>
+                                            </div>
+                                        )
+                                    }
+
+                                    {
+                                        (!order.isDelivered && !order.isCancelled) && (
+                                            <div className="box shadow-sm bg-light top-space">
+                                                {
+                                                    loadingCancel && <Loading />
+                                                }
+                                                {
+                                                    errorCancelled && <Message variant="alert-danger">{errorCancelled}</Message>
+                                                }
+                                                <button onClick={cancelHandler} className="btn btn-cancel col-12">
+                                                    CANCEL ORDER
+                                                </button>
+                                            </div>
+                                        )
+                                    }
+
+                                    {
+                                        order.isCancelled && (
+                                            <div className="box shadow-sm bg-light top-space">
+                                                <button disabled className="btn btn-dark col-12">
+                                                    ORDER HAS BEEN CANCELED
+                                                </button>
+                                            </div>
+                                        )
+                                    }
                                 </div>
                             </div>
                         </div>

@@ -674,3 +674,9 @@ textarea:focus {
     align-items: center;
     justify-content: center;
 }
+
+.alert-cancelled {
+    color: #fff;
+    background-color: #8a8a8a;
+    border-color:#7a7a7a;
+}
