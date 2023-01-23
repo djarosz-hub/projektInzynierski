@@ -121,20 +121,18 @@ productRoute.put("/:id", protect, adminAccess, asyncHandler(async (req, res) => 
 
 //COMMON ROUTES
 
-productRoute.get("/productCount", protect, asyncHandler(async (req,res) => {
-    console.log('products test')
-    const productsToCheck = req.body;
-    console.log(productsToCheck)
-    console.log(Array.isArray(productsToCheck))
-    if(!productsToCheck || !Array.isArray(productsToCheck)) {
+productRoute.post("/productCount", protect, asyncHandler(async (req, res) => {
+    const { productIds } = req.body;
+
+    if (!productIds || !Array.isArray(productIds)) {
         res.status(400);
         throw new Error("Invalid product data");
     }
     try {
         const productCountObj = {};
         const getProductData = (productId) => new Promise(resolve => resolve(Product.findById(productId)));
-        const checkAllProducts = async() => {
-            for (const productId of productsToCheck) {
+        const checkAllProducts = async () => {
+            for (const productId of productIds) {
                 const product = await getProductData(productId);
                 productCountObj[productId] = product.countInStock;
             }

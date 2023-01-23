@@ -3,27 +3,44 @@ import Header from "./../components/Header";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, removeFromCart } from './../Redux/Actions/CartActions';
+import { ORDER_COUNTCHECK_RESET } from './../Redux/Constants/OrderConstants';
+import { validateOrderItemsAvailability } from './../Redux/Actions/OrderActions';
+import Message from "../components/LoadingError/Error";
+import Loading from "../components/LoadingError/Loading";
 
 const CartScreen = ({ match, location, history }) => {
     window.scrollTo(0, 0);
     const dispatch = useDispatch();
 
-    const productId = match.params.id;
-    const qty = location.search ? Number(location.search.split("=")[1]) : 1;
+    // const productId = match.params.id;
+    // const qty = location.search ? Number(location.search.split("=")[1]) : 1;
 
     const cart = useSelector((state) => state.cart);
     const { cartItems } = cart;
 
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo } = userLogin;
+
+    const orderValidation = useSelector((state) => state.orderValidation);
+    const { loading, error, success } = orderValidation;
+
     const totalPrice = cartItems.reduce((a, i) => a + (i.qty * i.price), 0).toFixed(2);
 
     useEffect(() => {
-        if (productId) {
-            // dispatch(addToCart(productId, qty))
+        if (success && !error) {
+            history.push("/login?redirect=shipping");
         }
-    }, [dispatch, productId, qty])
+    }, [dispatch, success, error]);
+
+    useEffect(() => {
+        return () => {
+            dispatch({ type: ORDER_COUNTCHECK_RESET });
+        }
+    }, []);
 
     const checkoutHandler = (e) => {
-        history.push("/login?redirect=shipping");
+        e.preventDefault();
+        dispatch(validateOrderItemsAvailability(cartItems));
     };
 
     const removeFromCartHandler = (id) => {
@@ -63,11 +80,11 @@ const CartScreen = ({ match, location, history }) => {
                         </div>
                     ) : (
                         <>
+                            {loading && <Loading/>}
+                            {error && <Message variant="alert-danger">{error}</Message>}
                             <div className=" alert alert-info text-center mt-3">
                                 Total Cart Products
-                                <Link className="text-success mx-2" to="/cart">
-                                    ({cartItems.length})
-                                </Link>
+                                ({cartItems.length})
                             </div>
                             {
                                 cartItems.map((item) => (
@@ -118,10 +135,14 @@ const CartScreen = ({ match, location, history }) => {
                                     <button>Continue To Shopping</button>
                                 </Link>
                                 {
-                                    totalPrice > 0 && (
+                                    userInfo && totalPrice > 0 ? (
                                         <div className="col-md-6 d-flex justify-content-md-end mt-3 mt-md-0">
                                             <button onClick={checkoutHandler}>Checkout</button>
                                         </div>
+                                    ) : (
+                                        <Link to="/login" className="col-md-6 d-flex justify-content-md-end mt-3 mt-md-0">
+                                            <button>Log in to place order</button>
+                                        </Link>
                                     )
                                 }
                             </div>

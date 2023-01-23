@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import Header from "./../components/Header";
 import { useDispatch, useSelector } from 'react-redux';
 import Message from './../components/LoadingError/Error';
-import { ORDER_CREATE_RESET } from "../Redux/Constants/OrderConstants";
-import { createOrder } from "../Redux/Actions/OrderActions";
+import { ORDER_COUNTCHECK_RESET, ORDER_CREATE_RESET } from "../Redux/Constants/OrderConstants";
+import { createOrder, validateOrderItemsAvailability } from "../Redux/Actions/OrderActions";
+import Loading from "../components/LoadingError/Loading";
 
 const PlaceOrderScreen = ({ history }) => {
     window.scrollTo(0, 0);
@@ -12,8 +13,15 @@ const PlaceOrderScreen = ({ history }) => {
     const dispatch = useDispatch();
 
     const cart = useSelector((state) => state.cart);
+
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
+
+    const orderValidation = useSelector((state) => state.orderValidation);
+    const { loading: loadingValidation, error: errorValidation, success: successValidation } = orderValidation;
+
+    const orderCreate = useSelector((state) => state.orderCreate);
+    const { order, success, error } = orderCreate;
 
     const formattedAddress = `${cart.shippingAddress.address} ${cart.shippingAddress.postalCode} ${cart.shippingAddress.city}`;
     const addDecimals = (num) => {
@@ -26,26 +34,45 @@ const PlaceOrderScreen = ({ history }) => {
     cart.shippingPrice = (cart.itemsPrice > 100 ? 0 : 10).toFixed(2);
     cart.totalPrice = (+cart.itemsPrice + +cart.shippingPrice).toFixed(2);
 
-    const orderCreate = useSelector((state) => state.orderCreate);
-    const { order, success, error } = orderCreate;
-
     useEffect(() => {
+        console.log('effect')
+        if (successValidation) {
+            console.log('success validation')
+            dispatch(createOrder({
+                orderItems: cart.cartItems,
+                shippingAddress: cart.shippingAddress,
+                paymentMethod: cart.paymentMethod,
+                itemsPrice: cart.itemsPrice,
+                shippingPrice: cart.shippingPrice,
+                totalPrice: cart.totalPrice,
+            }));
+        }
         if (success) {
+            console.log('succes created')
             // history.push(`/order/${order._id}`);
             window.location.assign(`/order/${order._id}`);
-            dispatch({ type: ORDER_CREATE_RESET });
+            // dispatch({ type: ORDER_CREATE_RESET });
         }
-    }, [dispatch, success, order, history]);
+    }, [dispatch, success, order, history, successValidation]);
+
+    // niepotrzebne bo odswiezamy strone
+    // useEffect(() => {
+    //     return () => {
+    //         dispatch({ type: ORDER_COUNTCHECK_RESET });
+    //     }
+    // }, []);
 
     const placeOrderHandler = (e) => {
-        dispatch(createOrder({
-            orderItems: cart.cartItems,
-            shippingAddress: cart.shippingAddress,
-            paymentMethod: cart.paymentMethod,
-            itemsPrice: cart.itemsPrice,
-            shippingPrice: cart.shippingPrice,
-            totalPrice: cart.totalPrice,
-        }));
+        e.preventDefault();
+        dispatch(validateOrderItemsAvailability(cart.cartItems));
+        // dispatch(createOrder({
+        //     orderItems: cart.cartItems,
+        //     shippingAddress: cart.shippingAddress,
+        //     paymentMethod: cart.paymentMethod,
+        //     itemsPrice: cart.itemsPrice,
+        //     shippingPrice: cart.shippingPrice,
+        //     totalPrice: cart.totalPrice,
+        // }));
     };
 
     return (
@@ -106,6 +133,11 @@ const PlaceOrderScreen = ({ history }) => {
 
                 <div className="row order-products justify-content-between">
                     <div className="col-lg-8">
+                        <div style={{marginTop:"10px"}}>
+                            {errorValidation && <Message variant="alert-danger">{errorValidation}</Message>}
+                            {loadingValidation && <Loading />}
+                        </div>
+
                         {
                             cart.cartItems.length === 0 ? (
                                 <Message variant="alert-info mt-5">Your cart is empty</Message>
