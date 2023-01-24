@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import protect, { adminAccess } from '../Middleware/Auth.js';
 import Order from './../Models/OrderModel.js';
 import Product from './../Models/ProductModel.js';
+import sendEmail from './../utils/mailer.js';
 
 const orderRoute = express.Router();
 
@@ -71,12 +72,12 @@ orderRoute.put("/:id/cancel", protect, adminAccess, asyncHandler(async (req, res
     let order = null;
 
     try {
-        order = await Order.findById(orderId);
+        order = await Order.findById(orderId).populate("user", "email");;
     } catch (e) {
         res.status(500);
         throw new Error("Internal Server error");
     }
-
+    console.log(order)
     if (!order) {
         res.status(404);
         throw new Error("Order not found");
@@ -112,6 +113,16 @@ orderRoute.put("/:id/cancel", protect, adminAccess, asyncHandler(async (req, res
         throw new Error('Failed to cancel order');
     }
     console.log('all fine')
+
+    //EMAIL SECTION
+    let emailBody = 'We cancelled your order containing following items: \n';
+    for (const item of order.orderItems) {
+        emailBody += `- ${item.name} \n`;
+    }
+    emailBody += `If order was cancelled wrongly please contact us: ${process.env.EMAIL_SERVICE_USER}`;
+    sendEmail('Order has been cancelled', emailBody, order.user.email);
+    //EMAIL SECTION END
+
     res.status(200).json({})
 }));
 
@@ -215,18 +226,29 @@ orderRoute.post("/", protect, asyncHandler(async (req, res) => {
 
     // console.log('initial products:')
     // console.log(initialProductValues);
-
+    let createdOrder = null;
     try {
         // throw new Error();
         const order = new Order({ user: req.user._id, orderItems, shippingAddress, paymentMethod, itemsPrice, shippingPrice, totalPrice });
-        const createOrder = await order.save();
-        res.status(201).json(createOrder);
+        createdOrder = await order.save();
+        // res.status(201).json(createOrder);
     } catch (error) {
         // console.log('order fail')
         await backupProductStock();
         res.status(500);
         throw new Error("Failed to create order.");
     }
+
+    //EMAIL SECTION
+    let emailBody = 'You ordered following items:\n';
+    for (const item of orderItems) {
+        emailBody += `- ${item.name} \n`;
+    }
+    emailBody += 'Please visit our shop and finalize order.\n';
+    sendEmail('Order has been created', emailBody, req.user.email);
+    //EMAIL SECTION END
+
+    res.status(201).json(createdOrder);
 }));
 
 orderRoute.get("/", protect, asyncHandler(async (req, res) => {
@@ -264,7 +286,7 @@ orderRoute.put("/:id/payment", protect, asyncHandler(async (req, res) => {
         res.status(404);
         throw new Error("Order not found");
     };
-
+    let updatedOrder = null;
     try {
         if (order) {
             order.isPaid = true;
@@ -276,9 +298,8 @@ orderRoute.put("/:id/payment", protect, asyncHandler(async (req, res) => {
                 email_address: email_address,
             };
 
-            const updatedOrder = await order.save();
-            res.json(updatedOrder);
-
+            updatedOrder = await order.save();
+            // res.status(200).json(updatedOrder);
         } else {
             throw new Error();
         }
@@ -286,6 +307,17 @@ orderRoute.put("/:id/payment", protect, asyncHandler(async (req, res) => {
         res.status(500);
         throw new Error('Internal server error');
     }
+
+    //EMAIL SECTION
+    let emailBody = 'We received information about processing payment for your order with following items: \n';
+    for (const item of updatedOrder.orderItems) {
+        emailBody += `- ${item.name} \n`;
+    }
+    emailBody += 'We will send your order as soon as we receive payment confirmation.\nGreetings!';
+    sendEmail('Payment for your order is being processed', emailBody, req.user.email);
+    //EMAIL SECTION END
+
+    res.status(200).json(updatedOrder);
 }));
 
 //USER ROUTES END

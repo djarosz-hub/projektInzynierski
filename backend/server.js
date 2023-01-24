@@ -1,13 +1,13 @@
 import express from "express";
 import dotenv from "dotenv";
 import connectDb from "./config/MongoDb.js";
-import ImportData from "./DataImport.js";
 import productRoute from "./Routes/ProductRoutes.js";
 import { errorHandler, notFound } from "./Middleware/Errors.js";
 import userRoute from "./Routes/UserRoutes.js";
 import orderRoute from "./Routes/OrderRoutes.js";
 import session from "express-session";
 import categoryRoute from "./Routes/CategoryRoutes.js";
+// import sendEmail from './utils/mailer.js';
 
 dotenv.config();
 await connectDb();
@@ -24,8 +24,7 @@ app.use(session({
         maxAge: parseInt(process.env.SESSION_MAX_AGE),
     }
 }));
-
-app.use("/api/import", ImportData);
+// sendEmail('testsubject','hello world', 'damoved@gmail.com');
 app.use("/api/products", productRoute);
 app.use("/api/users", userRoute);
 app.use("/api/orders", orderRoute);

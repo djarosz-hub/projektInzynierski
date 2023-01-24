@@ -1,6 +1,8 @@
 import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT, USER_LIST_REQUEST, USER_LIST_SUCCESS, USER_LIST_FAIL, USER_LIST_RESET } from './../Constants/UserConstants';
 import axios from 'axios';
 import { toast } from "react-toastify";
+import { PRODUCT_CREATE_RESET, PRODUCT_UPDATE_RESET } from '../Constants/ProductConstants';
+import { CATEGORY_CREATE_RESET } from '../Constants/CategoryConstants';
 
 export const getInitialUserData = () => {
     return async dispatch => {
@@ -53,6 +55,9 @@ export const logout = () => (dispatch) => {
     // localStorage.removeItem("userInfo");
     dispatch({ type: USER_LOGOUT });
     dispatch({ type: USER_LIST_RESET });
+    dispatch({ type: PRODUCT_CREATE_RESET });
+    dispatch({ type: PRODUCT_UPDATE_RESET });
+    dispatch({ type: CATEGORY_CREATE_RESET });
     fetch(`/api/users/logout`);
     // document.location.href = "/login";
 };

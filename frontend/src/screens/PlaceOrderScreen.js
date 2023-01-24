@@ -23,7 +23,6 @@ const PlaceOrderScreen = () => {
     const orderCreate = useSelector((state) => state.orderCreate);
     const { order, success, error } = orderCreate;
 
-    const formattedAddress = `${cart.shippingAddress.address} ${cart.shippingAddress.postalCode} ${cart.shippingAddress.city}`;
     const addDecimals = (num) => {
         return (Math.round(num * 100) / 100).toFixed(2);
     };
@@ -55,9 +54,9 @@ const PlaceOrderScreen = () => {
             // dispatch({ type: ORDER_CREATE_RESET });
         }
         return () => {
-            dispatch({type: ORDER_CREATE_RESET})
+            dispatch({ type: ORDER_CREATE_RESET })
         }
-    // }, [dispatch, success, order, history, successValidation]);
+        // }, [dispatch, success, order, history, successValidation]);
     }, [dispatch, success]);
 
     useEffect(() => {
@@ -75,7 +74,7 @@ const PlaceOrderScreen = () => {
         }
         return () => {
             // console.log('reset countcheck')
-            dispatch({type: ORDER_COUNTCHECK_RESET})
+            dispatch({ type: ORDER_COUNTCHECK_RESET })
         }
     }, [dispatch, successValidation]);
 
@@ -138,10 +137,12 @@ const PlaceOrderScreen = () => {
                             </div>
                             <div className="col-md-8 center">
                                 <h5>
-                                    <strong>Deliver to</strong>
+                                    <strong>Deliver to:</strong>
                                 </h5>
-                                <p>
-                                    Address: {formattedAddress}
+                                <p className="mb-1">
+                                    {cart.shippingAddress.address}
+                                    <br />
+                                    {cart.shippingAddress.postalCode} {cart.shippingAddress.city}
                                 </p>
                             </div>
                         </div>
@@ -150,7 +151,7 @@ const PlaceOrderScreen = () => {
 
                 <div className="row order-products justify-content-between">
                     <div className="col-lg-8">
-                        <div style={{marginTop:"10px"}}>
+                        <div style={{ marginTop: "10px" }}>
                             {errorValidation && <Message variant="alert-danger">{errorValidation}</Message>}
                             {loadingValidation && <Loading />}
                         </div>
@@ -164,7 +165,7 @@ const PlaceOrderScreen = () => {
                                         cart.cartItems.map((item, index) => (
                                             <div key={index} className="order-product row">
                                                 <div className="col-md-3 col-6">
-                                                    <img src={item.image} alt={item.name} />
+                                                    <img src={item?.images[0]} alt={item?.name} />
                                                 </div>
                                                 <div className="col-md-5 col-6 d-flex align-items-center">
                                                     <Link to={`/products/${item.product}`}>

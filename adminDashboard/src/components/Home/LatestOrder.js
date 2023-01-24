@@ -34,46 +34,74 @@ const LatestOrder = (props) => {
                                     <th scope="col">Status</th>
                                 </tr>
                             </thead>
-                            {
-                                orders.length && (
-                                    <tbody>
-                                        {
-                                            orders.slice(0, 5).map((order) => (
-                                                <tr key={order._id} onClick={() => showOrderHandler(order._id)}>
-                                                    <td>
-                                                        <b>{order.user.name}</b>
-                                                    </td>
-                                                    <td>{order.user.email}</td>
-                                                    <td>${order.totalPrice}</td>
-                                                    <td>
-                                                        {
-                                                            order.isPaid ? (
-                                                                <span className="badge rounded-pill alert-success">
-                                                                    Paid At {moment(order.paidAt).format('HH:MM DD/MM/YYYY')}
-                                                                </span>
-                                                            ) : (
-                                                                <span className="badge rounded-pill alert-danger">
-                                                                    Not paid
-                                                                </span>
-                                                            )
-                                                        }
-                                                    </td>
-                                                    <td>{moment(order.createdAt).format('HH:MM DD/MM/YYYY')}</td>
-                                                    <td>
-                                                        {
-                                                            order.isDelivered ? (
-                                                                <span className="badge btn-success">Delivered</span>
-                                                            ) : (
-                                                                <span className="badge btn-dark">Not delivered</span>
-                                                            )
-                                                        }
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                )
-                            }
+                            <tbody>
+                                {
+                                    orders?.length ? ((orders.slice(0, 5).map((order) => (
+                                        <tr key={order._id} onClick={() => showOrderHandler(order._id)}>
+                                            <td>
+                                                <b>{order.user.name}</b>
+                                            </td>
+                                            <td>{order.user.email}</td>
+                                            <td>${order.totalPrice}</td>
+                                            <td>
+                                                {
+                                                    order.isPaid ? (
+                                                        <span className="badge rounded-pill alert-success">
+                                                            Paid At {moment(order.paidAt).format('HH:MM DD/MM/YYYY')}
+                                                        </span>
+                                                    ) : (
+                                                        <span className="badge rounded-pill alert-danger">
+                                                            Not paid
+                                                        </span>
+                                                    )
+                                                }
+                                            </td>
+                                            <td>{moment(order.createdAt).format('HH:MM DD/MM/YYYY')}</td>
+                                            <td>
+                                                {
+                                                    order.isDelivered ? (
+                                                        <span className="badge btn-success">Delivered</span>
+                                                    ) : (
+                                                        <span className="badge btn-dark">Not delivered</span>
+                                                    )
+                                                }
+                                            </td>
+                                        </tr>
+                                    )))) : null
+                                    // orders.length && (orders.slice(0, 5).map((order) => (
+                                    //     <tr key={order._id} onClick={() => showOrderHandler(order._id)}>
+                                    //         <td>
+                                    //             <b>{order.user.name}</b>
+                                    //         </td>
+                                    //         <td>{order.user.email}</td>
+                                    //         <td>${order.totalPrice}</td>
+                                    //         <td>
+                                    //             {
+                                    //                 order.isPaid ? (
+                                    //                     <span className="badge rounded-pill alert-success">
+                                    //                         Paid At {moment(order.paidAt).format('HH:MM DD/MM/YYYY')}
+                                    //                     </span>
+                                    //                 ) : (
+                                    //                     <span className="badge rounded-pill alert-danger">
+                                    //                         Not paid
+                                    //                     </span>
+                                    //                 )
+                                    //             }
+                                    //         </td>
+                                    //         <td>{moment(order.createdAt).format('HH:MM DD/MM/YYYY')}</td>
+                                    //         <td>
+                                    //             {
+                                    //                 order.isDelivered ? (
+                                    //                     <span className="badge btn-success">Delivered</span>
+                                    //                 ) : (
+                                    //                     <span className="badge btn-dark">Not delivered</span>
+                                    //                 )
+                                    //             }
+                                    //         </td>
+                                    //     </tr>
+                                    // )))
+                                }
+                            </tbody>
                         </table>
                     </div>
                 )
