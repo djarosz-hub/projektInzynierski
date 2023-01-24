@@ -16,7 +16,7 @@ const OrderDetailmain = (props) => {
 
     const orderDetails = useSelector((state) => state.orderDetails);
     const { loading, error, order } = orderDetails;
-
+  
     const orderDeliver = useSelector((state) => state.orderDeliver);
     const { loading: loadingDelivered, success: successDelivered, error: errorDelivered } = orderDeliver;
 

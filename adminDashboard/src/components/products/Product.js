@@ -7,6 +7,8 @@ const Product = (props) => {
     const { product } = props;
     const dispatch = useDispatch();
 
+    const productMainImage = product?.images[0];
+
     const deleteHandler = (id) => {
         if (window.confirm(`Removal confirmation: ${product.name}`)) {
             dispatch(deleteProduct(id));
@@ -18,7 +20,7 @@ const Product = (props) => {
             <div className="col-md-6 col-sm-6 col-lg-3 mb-5">
                 <div className="card card-product-grid shadow-sm">
                     <Link to={`/product/${product._id}/edit`} className="img-wrap">
-                        <img src={product.image} alt="Product" />
+                        <img src={productMainImage} alt="Product" />
                     </Link>
                     <div className="info-wrap">
                         <Link to={`/product/${product._id}/edit`} className="title text-truncate">

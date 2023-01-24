@@ -19,7 +19,7 @@ const ShopSection = (props) => {
     useEffect(() => {
         dispatch(listProduct(keyword, pageNumber))
     }, [dispatch, keyword, pageNumber])
-
+    // console.log(products)
     return (
         <>
             <div className="container">
@@ -44,7 +44,7 @@ const ShopSection = (props) => {
                                                     <div className="border-product">
                                                         <Link to={`/products/${product._id}`}>
                                                             <div className="shopBack">
-                                                                <img src={product.image} alt={product.name} />
+                                                                <img src={product?.images[0]} alt={product.name} />
                                                             </div>
                                                         </Link>
 

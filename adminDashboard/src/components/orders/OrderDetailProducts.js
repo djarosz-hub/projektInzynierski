@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const OrderDetailProducts = (props) => {
 
     const { order, loading } = props;
-
+    // console.log(order)
     if (!loading) {
         const addDecimals = (num) => {
             return (Math.round(num * 100) / 100).toFixed(2);
@@ -32,10 +32,10 @@ const OrderDetailProducts = (props) => {
                     order.orderItems.map((item, index) => (
                         <tr key={index}>
                             <td>
-                                <Link className="itemside" to="#">
+                                <Link className="itemside" to={`/product/${item.product}/edit`}>
                                     <div className="left">
                                         <img
-                                            src={item.image}
+                                            src={item?.images[0]}
                                             alt={item.name}
                                             style={{ width: "40px", height: "40px" }}
                                             className="img-xs"

@@ -22,7 +22,7 @@ const EditProductMain = (props) => {
     const [price, setPrice] = useState(0);
     const [countInStock, setCountInStock] = useState(0);
     const [description, setDescription] = useState("");
-    const [image, setImage] = useState("");
+    const [images, setImages] = useState("");
 
     const dispatch = useDispatch();
 
@@ -45,7 +45,9 @@ const EditProductMain = (props) => {
                 setPrice(product.price);
                 setCountInStock(product.countInStock);
                 setDescription(product.description);
-                setImage(product.image);
+                const imgArray = product.images;
+                const imgString = imgArray.join(',');
+                setImages(imgString);
             }
         }
     }, [product, dispatch, productId, successUpdate]);
@@ -57,7 +59,7 @@ const EditProductMain = (props) => {
             (isNaN(price) || price <= 0) ||
             (isNaN(countInStock) || countInStock < 0) ||
             (!description || description.trim() === "") ||
-            (!image || image.trim() === "")) {
+            (!images || images.trim() === "")) {
 
             toast.error("Invalid product data", ToastObjects);
         } else {
@@ -66,7 +68,7 @@ const EditProductMain = (props) => {
                 name,
                 price,
                 description,
-                image,
+                images,
                 countInStock
             }));
         }
@@ -159,14 +161,23 @@ const EditProductMain = (props) => {
                                                     ></textarea>
                                                 </div>
                                                 <div className="mb-4">
-                                                    <label className="form-label">Image</label>
-                                                    <input
+                                                    <label className="form-label">Images</label>
+                                                    {/* <input
                                                         className="form-control"
+                                                        placeholder="Image source links separated by commas"
                                                         type="text"
                                                         required
-                                                        value={image}
-                                                        onChange={(e) => setImage(e.target.value)}
-                                                    />
+                                                        value={images}
+                                                        onChange={(e) => setImages(e.target.value)}
+                                                    /> */}
+                                                    <textarea
+                                                        placeholder="Image source links separated by commas"
+                                                        className="form-control"
+                                                        rows="3"
+                                                        required
+                                                        value={images}
+                                                        onChange={(e) => setImages(e.target.value)}
+                                                    ></textarea>
                                                 </div>
                                             </>
                                         )

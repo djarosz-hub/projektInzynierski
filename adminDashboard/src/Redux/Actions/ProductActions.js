@@ -19,10 +19,10 @@ export const listProducts = () => async (dispatch) => {
     }
 };
 
-export const createProduct = (name, price, description, image, countInStock) => async (dispatch) => {
+export const createProduct = (name, price, description, images, countInStock) => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_CREATE_REQUEST });
-        const { data } = await axios.post(`/api/products`, { name, price, description, image, countInStock });
+        const { data } = await axios.post(`/api/products`, { name, price, description, images, countInStock });
         dispatch({ type: PRODUCT_CREATE_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -58,11 +58,8 @@ export const updateProduct = (product) => async (dispatch) => {
 export const editProduct = (id) => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_EDIT_REQUEST });
-
         const { data } = await axios.get(`/api/products/${id}`);
-
         dispatch({ type: PRODUCT_EDIT_SUCCESS, payload: data });
-
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         if (error.response && error.response.status === 401) {

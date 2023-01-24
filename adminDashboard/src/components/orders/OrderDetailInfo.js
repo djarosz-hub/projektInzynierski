@@ -39,13 +39,11 @@ const OrderDetailInfo = (props) => {
                         <i className="text-success fas fa-map-marker-alt"></i>
                     </span>
                     <div className="text">
-                        <h6 className="mb-1">Deliver to</h6>
+                        <h6 className="mb-1">Deliver to:</h6>
                         <p className="mb-1">
-                            Address: {order.shippingAddress.city}
-                            <br />
                             {order.shippingAddress.address}
                             <br />
-                            {order.shippingAddress.postalCode}
+                            {order.shippingAddress.postalCode} {order.shippingAddress.city}
                         </p>
                     </div>
                 </article>

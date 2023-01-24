@@ -40,8 +40,8 @@ productRoute.delete("/:id", protect, adminAccess, asyncHandler(async (req, res) 
 }));
 
 productRoute.post("/", protect, adminAccess, asyncHandler(async (req, res) => {
-    const { name, price, description, image, countInStock } = req.body;
-    if (!name || (!price || price < 0) || !description || !image || countInStock < 0) {
+    const { name, price, description, images:imagesString, countInStock } = req.body;
+    if (!name || (!price || price < 0) || !description || !imagesString || countInStock < 0) {
         res.status(400);
         throw new Error("Invalid product data");
     }
@@ -53,11 +53,12 @@ productRoute.post("/", protect, adminAccess, asyncHandler(async (req, res) => {
         throw new Error("Product with this name already exists.");
     } else {
         try {
+            const images = imagesString.split(',')
             const product = new Product({
                 name,
                 price,
                 description,
-                image,
+                images,
                 countInStock
             });
             if (product) {
@@ -74,9 +75,9 @@ productRoute.post("/", protect, adminAccess, asyncHandler(async (req, res) => {
 }));
 
 productRoute.put("/:id", protect, adminAccess, asyncHandler(async (req, res) => {
-    const { _id, name, price, description, image, countInStock } = req.body.product;
+    const { _id, name, price, description, images:imagesString, countInStock } = req.body.product;
 
-    if (!name || (!price || price < 0) || !description || !image || countInStock < 0 || _id != req.params.id) {
+    if (!name || (!price || price < 0) || !description || !imagesString || countInStock < 0 || _id != req.params.id) {
         res.status(400);
         throw new Error("Invalid product data");
     }
@@ -103,10 +104,12 @@ productRoute.put("/:id", protect, adminAccess, asyncHandler(async (req, res) => 
     }
 
     try {
+        const images = imagesString.split(',')
+
         product.name = name || product.name;
         product.price = price || product.price;
         product.description = description || product.description;
-        product.image = image || product.image;
+        product.images = images || product.images;
         product.countInStock = countInStock || product.countInStock;
 
         const updatedProduct = await product.save();

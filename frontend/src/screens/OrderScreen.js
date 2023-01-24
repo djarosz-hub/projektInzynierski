@@ -46,7 +46,7 @@ const OrderScreen = ({ match }) => {
             order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0)
         );
     }
-
+    // console.log(order)
     useEffect(() => {
         // console.log('effect ')
         // dispatch(getOrderDetails(orderId));
@@ -222,7 +222,7 @@ const OrderScreen = ({ match }) => {
                                                     order.orderItems.map((item, index) => (
                                                         <div key={index} className="order-product row">
                                                             <div className="col-md-3 col-6">
-                                                                <img src={item.image} alt={item.name} />
+                                                                <img src={item?.images[0]} alt={item.name} />
                                                             </div>
                                                             <div className="col-md-5 col-6 d-flex align-items-center">
                                                                 <Link to={`/products/${item.product}`}>

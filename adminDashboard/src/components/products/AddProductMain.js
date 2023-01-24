@@ -21,7 +21,7 @@ const AddProductMain = () => {
     const [price, setPrice] = useState(0);
     const [countInStock, setCountInStock] = useState(0);
     const [description, setDescription] = useState("");
-    const [image, setImage] = useState("");
+    const [images, setImages] = useState("");
 
     const dispatch = useDispatch();
 
@@ -36,7 +36,7 @@ const AddProductMain = () => {
             setPrice(0);
             setCountInStock(0);
             setDescription("");
-            setImage("");
+            setImages("");
         }
 
         return () => {
@@ -46,16 +46,17 @@ const AddProductMain = () => {
 
     const submitHandler = (e) => {
         e.preventDefault();
-
+        // console.log(images)
+        // return;
         if ((!name || name.trim() === "") ||
             (isNaN(price) || price <= 0) ||
             (isNaN(countInStock) || countInStock < 0) ||
             (!description || description.trim() === "") ||
-            (!image || image.trim() === "")) {
+            (!images || images.trim() === "")) {
 
             toast.error("Invalid product data", ToastObjects);
         } else {
-            dispatch(createProduct(name, price, description, image, countInStock));
+            dispatch(createProduct(name, price, description, images, countInStock));
         }
     };
 
@@ -139,15 +140,23 @@ const AddProductMain = () => {
                                         ></textarea>
                                     </div>
                                     <div className="mb-4">
-                                        <label className="form-label">Image</label>
-                                        <input
+                                        <label className="form-label">Images</label>
+                                        {/* <input
                                             className="form-control"
                                             type="text"
                                             placeholder="Inter Image URL"
                                             required
-                                            value={image}
-                                            onChange={(e) => setImage(e.target.value)}
-                                        />
+                                            value={images}
+                                            onChange={(e) => setImages(e.target.value)}
+                                        /> */}
+                                        <textarea
+                                            placeholder="Image source links separated by commas"
+                                            className="form-control"
+                                            rows="3"
+                                            required
+                                            value={images}
+                                            onChange={(e) => setImages(e.target.value)}
+                                        ></textarea>
                                     </div>
                                 </div>
                             </div>

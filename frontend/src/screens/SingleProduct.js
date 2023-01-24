@@ -9,11 +9,13 @@ import Loading from './../components/LoadingError/Loading';
 import { PRODUCT_CREATE_REVIEW_RESET } from "../Redux/Constants/ProductConstants";
 import moment from 'moment';
 import { addToCart } from './../Redux/Actions/CartActions';
+import ImageSlider from "../components/productComponents/ImageSlider";
 
-const SingleProduct = ({ history, match }) => {
+const SingleProduct = ({ match }) => {
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
     const [invalidFormDataError, setInvalidFormDataError] = useState("");
+    const [mainImage, setMainImage] = useState("");
 
     const dispatch = useDispatch();
     const productId = match.params.id;
@@ -45,6 +47,12 @@ const SingleProduct = ({ history, match }) => {
 
     }, [dispatch, productId, successCreateReview])
 
+    useEffect(() => {
+        if (product && product.images) {
+            setMainImage(product.images[0]);
+        }
+    }, [product])
+
     const AddToCart = (e) => {
         e.preventDefault();
         dispatch(addToCart(productId, 1));
@@ -59,7 +67,7 @@ const SingleProduct = ({ history, match }) => {
             dispatch(createProductReview(productId, { rating, comment }))
         }
     }
-
+    // console.log(product)
     return (
         <>
             <Header />
@@ -73,9 +81,11 @@ const SingleProduct = ({ history, match }) => {
                         <>
                             <div className="row">
                                 <div className="col-md-6">
-                                    <div className="single-image">
-                                        <img src={product.image} alt={product.name} />
-                                    </div>
+                                    {/* <div className="single-image"> */}
+                                    {/* {console.log(product)} */}
+                                    {/* <img src={mainImage} alt={product.name} /> */}
+                                    {/* </div> */}
+                                    <ImageSlider images={product.images} name={product.name}/>
                                 </div>
                                 <div className="col-md-6">
                                     <div className="product-dtl">

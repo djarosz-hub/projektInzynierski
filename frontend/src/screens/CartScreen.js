@@ -17,6 +17,7 @@ const CartScreen = ({ match, location, history }) => {
 
     const cart = useSelector((state) => state.cart);
     const { cartItems } = cart;
+    // console.log(cart)
 
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
@@ -95,7 +96,7 @@ const CartScreen = ({ match, location, history }) => {
                                             <i className="fas fa-times"></i>
                                         </div>
                                         <div className="cart-image col-md-3">
-                                            <img src={item.image} alt={item.name} />
+                                            <img src={item?.images[0]} alt={item.name} />
                                         </div>
                                         <div className="cart-text col-md-5 d-flex align-items-center">
                                             <Link to={`/products/${item.product}`}>
