@@ -7,6 +7,7 @@ import { PRODUCT_UPDATE_RESET } from "../../Redux/Constants/ProductConstants";
 import { toast } from 'react-toastify';
 import Message from './../LoadingError/Error';
 import Loading from './../LoadingError/Loading';
+import { listCategories } from "../../Redux/Actions/CategoryActions";
 
 const ToastObjects = {
     pauseOnFocusLoss: false,
@@ -17,12 +18,12 @@ const ToastObjects = {
 
 const EditProductMain = (props) => {
     const { productId } = props;
-
     const [name, setName] = useState("");
     const [price, setPrice] = useState(0);
     const [countInStock, setCountInStock] = useState(0);
     const [description, setDescription] = useState("");
     const [images, setImages] = useState("");
+    const [category, setCategory] = useState("");
 
     const dispatch = useDispatch();
 
@@ -31,6 +32,9 @@ const EditProductMain = (props) => {
 
     const productUpdate = useSelector((state) => state.productUpdate);
     const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = productUpdate;
+
+    const categoryList = useSelector((state) => state.categoryList);
+    const { loading: loadingCategories, error: errorCategories, categories } = categoryList;
 
     useEffect(() => {
 
@@ -41,6 +45,8 @@ const EditProductMain = (props) => {
             if (!product.name || product._id !== productId) {
                 dispatch(editProduct(productId));
             } else {
+                console.log('got product:')
+                console.log(product)
                 setName(product.name);
                 setPrice(product.price);
                 setCountInStock(product.countInStock);
@@ -48,9 +54,20 @@ const EditProductMain = (props) => {
                 const imgArray = product.images;
                 const imgString = imgArray.join(',');
                 setImages(imgString);
+                setCategory(product.categoryId);
             }
         }
     }, [product, dispatch, productId, successUpdate]);
+
+    useEffect(() => {
+        // console.log('effect cat')
+        // console.log(categories)
+        if (!categories?.length && !loadingCategories && !errorCategories) {
+            // console.log('listing cat')
+            dispatch(listCategories());
+        }
+
+    }, [categories, dispatch, loadingCategories, errorCategories]);
 
     const submitHandler = (e) => {
         e.preventDefault();
@@ -59,7 +76,8 @@ const EditProductMain = (props) => {
             (isNaN(price) || price <= 0) ||
             (isNaN(countInStock) || countInStock < 0) ||
             (!description || description.trim() === "") ||
-            (!images || images.trim() === "")) {
+            (!images || images.trim() === "") ||
+            (!category || category.trim() === "")) {
 
             toast.error("Invalid product data", ToastObjects);
         } else {
@@ -69,7 +87,8 @@ const EditProductMain = (props) => {
                 price,
                 description,
                 images,
-                countInStock
+                countInStock,
+                category
             }));
         }
     };
@@ -159,6 +178,21 @@ const EditProductMain = (props) => {
                                                         value={description}
                                                         onChange={(e) => setDescription(e.target.value)}
                                                     ></textarea>
+                                                </div>
+                                                <div className="mb-4">
+                                                    <label className="form-label">Category</label>
+                                                    {errorCategories && <Message variant="alert-danger">{errorCategories}</Message>}
+                                                    <select required value={category} onChange={(e) => setCategory(e.target.value)} className="col-12 bg-light p-3 mt-2 border-0 rounded">
+                                                        <option value="">Select...</option>
+                                                        {
+                                                            categories?.length && (
+                                                                categories.map((cat, index) => (
+                                                                    <option key={index} value={cat._id}>{cat.name}</option>
+                                                                ))
+                                                            )
+                                                        }
+                                                        {/* <option value="5">5 - Excellent</option> */}
+                                                    </select>
                                                 </div>
                                                 <div className="mb-4">
                                                     <label className="form-label">Images</label>

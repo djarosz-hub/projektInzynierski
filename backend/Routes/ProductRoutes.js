@@ -1,5 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
+import Category from '../Models/CategoryModel.js';
 import Product from '../Models/ProductModel.js';
 import protect, { adminAccess } from './../Middleware/Auth.js';
 
@@ -10,7 +11,7 @@ productRoute.get("/all", protect, adminAccess, asyncHandler(async (req, res) => 
     console.log('all products get')
     try {
         const products = await Product.find({}).sort({ name: 1 }).collation({ locale: "en", caseLevel: true });
-        res.json(products);
+        res.status(200).json(products);
     } catch (e) {
         res.status(500);
         throw new Error("Products loading error");
@@ -40,13 +41,24 @@ productRoute.delete("/:id", protect, adminAccess, asyncHandler(async (req, res) 
 }));
 
 productRoute.post("/", protect, adminAccess, asyncHandler(async (req, res) => {
-    const { name, price, description, images:imagesString, countInStock } = req.body;
-    if (!name || (!price || price < 0) || !description || !imagesString || countInStock < 0) {
+    // console.log(req.body.product)
+    const { name, price, description, images: imagesString, countInStock, category: categoryId } = req.body.product;
+    if (!name || (!price || price < 0) || !description || !imagesString || countInStock < 0 || !categoryId) {
         res.status(400);
         throw new Error("Invalid product data");
     }
 
-    const productExists = await Product.findOne({ name });
+    try {
+        const validCategory = await Category.findById(categoryId)
+        if (!validCategory) {
+            throw new Error();
+        }
+    } catch (e) {
+        res.status(404);
+        throw new Error('Invalid category data');
+    }
+
+    const productExists = await Product.findOne({ name: name });
 
     if (productExists) {
         res.status(400);
@@ -59,7 +71,8 @@ productRoute.post("/", protect, adminAccess, asyncHandler(async (req, res) => {
                 price,
                 description,
                 images,
-                countInStock
+                countInStock,
+                categoryId
             });
             if (product) {
                 const createdProduct = await product.save();
@@ -75,9 +88,9 @@ productRoute.post("/", protect, adminAccess, asyncHandler(async (req, res) => {
 }));
 
 productRoute.put("/:id", protect, adminAccess, asyncHandler(async (req, res) => {
-    const { _id, name, price, description, images:imagesString, countInStock } = req.body.product;
+    const { _id, name, price, description, images: imagesString, countInStock, category: categoryId } = req.body.product;
 
-    if (!name || (!price || price < 0) || !description || !imagesString || countInStock < 0 || _id != req.params.id) {
+    if (!name || (!price || price < 0) || !description || !imagesString || countInStock < 0 || _id != req.params.id || !categoryId) {
         res.status(400);
         throw new Error("Invalid product data");
     }
@@ -104,6 +117,16 @@ productRoute.put("/:id", protect, adminAccess, asyncHandler(async (req, res) => 
     }
 
     try {
+        const validCategory = await Category.findById(categoryId)
+        if (!validCategory) {
+            throw new Error();
+        }
+    } catch (e) {
+        res.status(404);
+        throw new Error('Invalid category data');
+    }
+
+    try {
         const images = imagesString.split(',')
 
         product.name = name || product.name;
@@ -111,6 +134,7 @@ productRoute.put("/:id", protect, adminAccess, asyncHandler(async (req, res) => 
         product.description = description || product.description;
         product.images = images || product.images;
         product.countInStock = countInStock || product.countInStock;
+        product.categoryId = categoryId || product.categoryId;
 
         const updatedProduct = await product.save();
         res.status(200).json(updatedProduct);
@@ -154,8 +178,9 @@ productRoute.get("/:id", asyncHandler(async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
         // console.log('after')
+        console.log(product)
         if (product) {
-            res.json(product);
+            res.status(200).json(product);
         } else {
             throw new Error();
         }

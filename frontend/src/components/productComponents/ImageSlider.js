@@ -8,6 +8,8 @@ function ImageSlider(props) {
     const [imagesReady, setImagesReady] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
+    const leftArrowUTFSign = '\u2770';
+    const rightArrowUTFSign = '\u2771';
 
     useEffect(() => {
         if (images && images.length > 0) {
@@ -35,8 +37,8 @@ function ImageSlider(props) {
         <>
             {imagesReady && (
                 <div className="single-image" style={{ position: 'relative' }}>
-                    <div className="basic-arrow left-arrow" onClick={previousImageHandler}>{'\u2770'}</div>
-                    <div className="basic-arrow right-arrow" onClick={nextImageHandler}>{'\u2771'}</div>
+                    <div className="basic-arrow left-arrow" onClick={previousImageHandler}>{leftArrowUTFSign}</div>
+                    <div className="basic-arrow right-arrow" onClick={nextImageHandler}>{rightArrowUTFSign}</div>
                     <img src={`${images[currentIndex]}`} alt={name} />
                     <div className="dots-container">
                         {images.map((image, index) => (

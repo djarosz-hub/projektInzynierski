@@ -59,6 +59,11 @@ const productSchema = mongoose.Schema({
         type: Number,
         require: false,
         default: 0
+    },
+    categoryId: {
+        type: String,
+        require: true,
+        default: ""
     }
 },
     {

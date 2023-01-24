@@ -7,6 +7,7 @@ import { createProduct } from '../../Redux/Actions/ProductActions';
 import Message from './../LoadingError/Error';
 import Loading from './../LoadingError/Loading';
 import Toast from './../LoadingError/Toast';
+import { listCategories } from "../../Redux/Actions/CategoryActions";
 
 const ToastObjects = {
     pauseOnFocusLoss: false,
@@ -22,13 +23,24 @@ const AddProductMain = () => {
     const [countInStock, setCountInStock] = useState(0);
     const [description, setDescription] = useState("");
     const [images, setImages] = useState("");
+    const [category, setCategory] = useState("");
 
     const dispatch = useDispatch();
 
     const productCreate = useSelector((state) => state.productCreate);
     const { loading, error, product } = productCreate;
 
+    const categoryList = useSelector((state) => state.categoryList);
+    const { loading: loadingCategories, error: errorCategories, categories } = categoryList;
+
     useEffect(() => {
+        // console.log('effect')
+        // console.log(categories)
+        if (!categories?.length && !loadingCategories && !errorCategories) {
+            console.log('listing cat')
+            dispatch(listCategories());
+        }
+
         if (product) {
             toast.success("Product created.", ToastObjects);
             dispatch({ type: PRODUCT_CREATE_RESET });
@@ -37,26 +49,34 @@ const AddProductMain = () => {
             setCountInStock(0);
             setDescription("");
             setImages("");
+            setCategory("");
         }
 
+    }, [product, categories, dispatch, loadingCategories, errorCategories]);
+
+    useEffect(() => {
         return () => {
             dispatch({ type: PRODUCT_CREATE_RESET })
         }
-    }, [product, dispatch]);
+    }, [dispatch]);
+
 
     const submitHandler = (e) => {
         e.preventDefault();
+        console.log('cat: ' + category)
+        // return;
         // console.log(images)
         // return;
         if ((!name || name.trim() === "") ||
             (isNaN(price) || price <= 0) ||
             (isNaN(countInStock) || countInStock < 0) ||
             (!description || description.trim() === "") ||
-            (!images || images.trim() === "")) {
+            (!images || images.trim() === "") ||
+            (!category || category.trim() === "")) {
 
             toast.error("Invalid product data", ToastObjects);
         } else {
-            dispatch(createProduct(name, price, description, images, countInStock));
+            dispatch(createProduct({ name, price, description, images, countInStock, category }));
         }
     };
 
@@ -140,15 +160,22 @@ const AddProductMain = () => {
                                         ></textarea>
                                     </div>
                                     <div className="mb-4">
+                                        <label className="form-label">Category</label>
+                                        {errorCategories && <Message variant="alert-danger">{errorCategories}</Message>}
+                                        <select required value={category} onChange={(e) => setCategory(e.target.value)} className="col-12 bg-light p-3 mt-2 border-0 rounded">
+                                            <option value="">Select...</option>
+                                            {
+                                                categories?.length && (
+                                                    categories.map((cat, index) => (
+                                                        <option key={index} value={cat._id}>{cat.name}</option>
+                                                    ))
+                                                )
+                                            }
+                                            {/* <option value="5">5 - Excellent</option> */}
+                                        </select>
+                                    </div>
+                                    <div className="mb-4">
                                         <label className="form-label">Images</label>
-                                        {/* <input
-                                            className="form-control"
-                                            type="text"
-                                            placeholder="Inter Image URL"
-                                            required
-                                            value={images}
-                                            onChange={(e) => setImages(e.target.value)}
-                                        /> */}
                                         <textarea
                                             placeholder="Image source links separated by commas"
                                             className="form-control"
