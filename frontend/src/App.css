@@ -743,6 +743,7 @@ textarea:focus {
 
 .active-page {
     color: black !important;
+    text-decoration: underline !important;
 }
 
 .spaced-items {

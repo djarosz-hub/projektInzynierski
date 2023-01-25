@@ -900,3 +900,37 @@ ul.row-sm {
 .btn-cancel:hover {
     background-color: rgb(108, 34, 34);
 }
+
+.pagination {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding: 10px 0;
+    font-weight:bold;
+}
+.pagination > li {
+    width:auto;
+    min-width:35px;
+    height:30px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border-radius:30%;
+    color:#1d8aa5;
+    
+}
+
+.pagination > li > a {
+    color:#1d8aa5;
+    text-decoration: none;
+}
+
+.active-page {
+    color: black !important;
+    text-decoration: underline !important;
+}
+
+.centered {
+    display:flex;
+    justify-content: center;
+}

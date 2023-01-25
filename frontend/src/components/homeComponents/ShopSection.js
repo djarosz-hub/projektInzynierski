@@ -68,7 +68,7 @@ const ShopSection = () => {
 
     const handlePageClick = (data) => {
         const selectedPage = data.selected; // actual value, not label so for first page value is 0
-        console.log(selectedPage)
+        // console.log(selectedPage)
         setCurrentPage(selectedPage);
 
         window.scrollTo(0, 0);
@@ -80,32 +80,35 @@ const ShopSection = () => {
         <>
             <div className="container">
                 <div className="col-12 d-flex align-items-center padded">
-                    {/* <form className="input-group"> */}
-                    <input
-                        type="search"
-                        className="form-control rounded search"
-                        placeholder="Filter items by name or description..."
-                        onChange={(e) => setFilterValue(e.target.value)}
-                    />
-                    {/* <button className="search-button">
-                            search
-                        </button>
-                    </form> */}
+                    {
+                        !loading && (
+                            <input
+                                type="search"
+                                className="form-control rounded search"
+                                placeholder="Filter items by name or description..."
+                                onChange={(e) => setFilterValue(e.target.value)}
+                            />
+                        )
+                    }
                 </div>
                 <div className="col-12 d-flex align-items-center padded top-margin">
                     {/* <label className="form-label">Category</label> */}
                     {errorCategories && <Message variant="alert-danger">{errorCategories}</Message>}
-                    <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="col-12 bg-light p-3 mt-2 border-0 rounded">
-                        <option value="">Filter by category...</option>
-                        {
-                            categories?.length && (
-                                categories.map((cat, index) => (
-                                    <option key={index} value={cat._id}>{cat.name}</option>
-                                ))
-                            )
-                        }
-                        {/* <option value="5">5 - Excellent</option> */}
-                    </select>
+                    {loadingCategories && <Loading />}
+                    {
+                        categories && categories.length && (
+                            <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="col-12 bg-light p-3 mt-2 border-0 rounded">
+                                <option value="">Filter by category...</option>
+                                {
+                                    categories?.length && (
+                                        categories.map((cat, index) => (
+                                            <option key={index} value={cat._id}>{cat.name}</option>
+                                        ))
+                                    )
+                                }
+                            </select>
+                        )
+                    }
                 </div>
                 <div className="section">
                     <div className="row">
@@ -153,7 +156,7 @@ const ShopSection = () => {
                                 }
                                 {
 
-                                    filteredProducts.length > 0 ? (
+                                    filteredProducts.length > 0 && (
                                         <ReactPaginate
                                             previousLabel={'PREVIOUS'}
                                             nextLabel={'NEXT'}
@@ -167,7 +170,10 @@ const ShopSection = () => {
                                             onPageChange={handlePageClick}
                                             containerClassName={'pagination'}
                                             activeClassName={'active-page'}
-                                        />) : (
+                                        />)
+                                }
+                                {
+                                    !loading && filteredProducts.length === 0 && (
                                         <div className="centered">No items matching this criteria - choose another filter.</div>
                                     )
                                 }
