@@ -35,8 +35,6 @@ const OrderScreen = ({ match }) => {
     const orderPayment = useSelector((state) => state.orderPayment);
     const { loading: loadingPayment, success: successPayment, error: errorPayment } = orderPayment;
 
-    // const formattedAddress = `${order?.shippingAddress?.address} ${order?.shippingAddress?.postalCode} ${order?.shippingAddress?.city}`;
-
     if (!loading && order) {
         const addDecimals = (num) => {
             return (Math.round(num * 100) / 100).toFixed(2);
@@ -46,14 +44,9 @@ const OrderScreen = ({ match }) => {
             order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0)
         );
     }
-    // console.log(order)
+
     useEffect(() => {
-        // console.log('effect ')
-        // dispatch(getOrderDetails(orderId));
-
-        // dispatch({ type: ORDER_DETAILS_RESET });
-
-        // console.log('error payment' + errorPayment);
+    
         const addPayPalScript = async () => {
             const { data: clientId } = await axios.get("/api/config/paypal");
             const script = document.createElement("script");
@@ -90,19 +83,8 @@ const OrderScreen = ({ match }) => {
                 }
             }
         }
-        // return () => {
-        //     dispatch({ type: ORDER_DETAILS_RESET });
-        // }
 
     }, [dispatch, orderId, order, loading, successPayment, errorPayment]);
-
-    // useEffect(() => {
-    //     // dispatch(getOrderDetails(orderId));
-
-    //     return () => {
-    //         dispatch({ type: ORDER_DETAILS_RESET });
-    //     }
-    // }, [])
 
     const successPaymentHandler = (paymentResult) => {
         dispatch(payOrder(orderId, paymentResult));
@@ -158,7 +140,7 @@ const OrderScreen = ({ match }) => {
                                                 order.isPaid ? (
                                                     <div className="bg-info p-2 col-12">
                                                         <p className="text-white text-center text-sm-start">
-                                                            Paid at: {moment(order.paidAt).format('HH:MM DD/MM/YYYY')}
+                                                            Paid at: {moment(order.paidAt).format('hh:mm DD/MM/YYYY')}
                                                         </p>
                                                     </div>
                                                 ) : (
@@ -184,7 +166,6 @@ const OrderScreen = ({ match }) => {
                                                 <strong>Deliver to:</strong>
                                             </h5>
                                             <p>
-                                                {/* Address: {formattedAddress} */}
                                                 {order?.shippingAddress?.address}
                                             </p>
                                             <p>

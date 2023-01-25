@@ -24,8 +24,6 @@ const OrderMain = () => {
     }, [dispatch]);
 
     const filterHandler = (order) => {
-        console.log('status filter: ' + statusFilter)
-        console.log('keyword filter: ' + filterValue);
 
         if (statusFilter) {
             if (statusFilter === "paid" && !order.isPaid) {
@@ -46,7 +44,6 @@ const OrderMain = () => {
         }
 
         if (filterValue) {
-            // console.log('filvalue: ' + filterValue)
             const filter = filterValue.trim().toLowerCase();
             const orderUserNameIncludes = order.user.name.toLowerCase().includes(filter) ? true : false;
             const orderUserEmailIncludes = order.user.email.toLowerCase().includes(filter) ? true : false;
@@ -58,7 +55,6 @@ const OrderMain = () => {
     }
 
     const filteredOrders = orders && orders?.filter(order => filterHandler(order));
-    console.log(filteredOrders)
     const handlePageClick = (data) => {
         const selectedPage = data.selected; // actual value, not label so for first page value is 0
         setCurrentPage(selectedPage);
@@ -103,14 +99,6 @@ const OrderMain = () => {
                                 <option value="cancelled">Cancelled</option>
                             </select>
                         </div>
-                        {/* for future implementation */}
-                        {/* <div className="col-lg-2 col-6 col-md-3">
-                            <select className="form-select">
-                                <option>Show 20</option>
-                                <option>Show 30</option>
-                                <option>Show 40</option>
-                            </select>
-                        </div> */}
                     </div>
                 </header>
                 <div className="card-body">

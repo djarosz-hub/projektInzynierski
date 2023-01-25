@@ -34,10 +34,7 @@ const AddProductMain = () => {
     const { loading: loadingCategories, error: errorCategories, categories } = categoryList;
 
     useEffect(() => {
-        // console.log('effect')
-        // console.log(categories)
         if (!categories?.length && !loadingCategories && !errorCategories) {
-            console.log('listing cat')
             dispatch(listCategories());
         }
 
@@ -63,10 +60,6 @@ const AddProductMain = () => {
 
     const submitHandler = (e) => {
         e.preventDefault();
-        console.log('cat: ' + category)
-        // return;
-        // console.log(images)
-        // return;
         if ((!name || name.trim() === "") ||
             (isNaN(price) || price <= 0) ||
             (isNaN(countInStock) || countInStock < 0) ||
@@ -171,7 +164,6 @@ const AddProductMain = () => {
                                                     ))
                                                 )
                                             }
-                                            {/* <option value="5">5 - Excellent</option> */}
                                         </select>
                                     </div>
                                     <div className="mb-4">

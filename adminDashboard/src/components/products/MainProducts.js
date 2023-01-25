@@ -28,7 +28,6 @@ const MainProducts = () => {
     const { loading: loadingCategories, error: errorCategories, categories } = categoryList;
 
     useEffect(() => {
-        // console.log(categories)
         dispatch(listCategories());
     }, [dispatch]);
 
@@ -37,8 +36,6 @@ const MainProducts = () => {
     }, [dispatch, successDelete]);
 
     const filterHandler = (product) => {
-        console.log('category filter: ' + categoryFilter)
-        console.log('keyword filter: ' + filterValue);
 
         if (categoryFilter) {
             if (product.categoryId !== categoryFilter) {
@@ -47,12 +44,10 @@ const MainProducts = () => {
         }
 
         if (filterValue) {
-            // console.log('filvalue: ' + filterValue)
             const filter = filterValue.trim().toLowerCase();
             const nameIncludes = product.name.toLowerCase().includes(filter) ? true : false;
             const descriptionIncludes = product.description.toLowerCase().includes(filter) ? true : false;
-            // console.log('nameIncludes:' + nameIncludes)
-            // console.log('descriptionIncludes: ' + descriptionIncludes)
+
             const result = nameIncludes ? nameIncludes : descriptionIncludes;
             return result;
         }
@@ -64,12 +59,8 @@ const MainProducts = () => {
 
     const handlePageClick = (data) => {
         const selectedPage = data.selected; // actual value, not label so for first page value is 0
-        // console.log(selectedPage)
         setCurrentPage(selectedPage);
-
         window.scrollTo(0, 0);
-
-        // props.setCurrentPage(selected * 10)
     };
 
     const handleKeywordFilter = (keyword) => {

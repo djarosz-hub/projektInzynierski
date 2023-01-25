@@ -45,8 +45,6 @@ const EditProductMain = (props) => {
             if (!product.name || product._id !== productId) {
                 dispatch(editProduct(productId));
             } else {
-                console.log('got product:')
-                console.log(product)
                 setName(product.name);
                 setPrice(product.price);
                 setCountInStock(product.countInStock);
@@ -60,10 +58,7 @@ const EditProductMain = (props) => {
     }, [product, dispatch, productId, successUpdate]);
 
     useEffect(() => {
-        // console.log('effect cat')
-        // console.log(categories)
         if (!categories?.length && !loadingCategories && !errorCategories) {
-            // console.log('listing cat')
             dispatch(listCategories());
         }
 
@@ -191,19 +186,10 @@ const EditProductMain = (props) => {
                                                                 ))
                                                             )
                                                         }
-                                                        {/* <option value="5">5 - Excellent</option> */}
                                                     </select>
                                                 </div>
                                                 <div className="mb-4">
                                                     <label className="form-label">Images</label>
-                                                    {/* <input
-                                                        className="form-control"
-                                                        placeholder="Image source links separated by commas"
-                                                        type="text"
-                                                        required
-                                                        value={images}
-                                                        onChange={(e) => setImages(e.target.value)}
-                                                    /> */}
                                                     <textarea
                                                         placeholder="Image source links separated by commas"
                                                         className="form-control"

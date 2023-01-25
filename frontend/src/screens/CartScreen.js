@@ -8,16 +8,12 @@ import { validateOrderItemsAvailability } from './../Redux/Actions/OrderActions'
 import Message from "../components/LoadingError/Error";
 import Loading from "../components/LoadingError/Loading";
 
-const CartScreen = ({ match, location, history }) => {
+const CartScreen = ({ history }) => {
     window.scrollTo(0, 0);
     const dispatch = useDispatch();
 
-    // const productId = match.params.id;
-    // const qty = location.search ? Number(location.search.split("=")[1]) : 1;
-
     const cart = useSelector((state) => state.cart);
     const { cartItems } = cart;
-    // console.log(cart)
 
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
@@ -110,13 +106,6 @@ const CartScreen = ({ match, location, history }) => {
                                                 <input type="number" value={item.qty} disabled className="qty-input" />
                                                 <div className="qty-handler" onClick={() => increaseQty(item.product, item.qty)}>+</div>
                                             </div>
-                                            {/* <select disabled className="disabled-select" value={item.qty} onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}>
-                                                {[...Array(item.countInStock).keys()].map((x) => (
-                                                    <option key={x + 1} value={x + 1}>
-                                                        {x + 1}
-                                                    </option>
-                                                ))}
-                                            </select> */}
                                         </div>
                                         <div className="cart-price mt-3 mt-md-0 col-md-2 align-items-sm-end align-items-start  d-flex flex-column justify-content-center col-sm-7">
                                             <h6>PRICE</h6>

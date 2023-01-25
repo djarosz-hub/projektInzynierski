@@ -5,7 +5,7 @@ import Message from '../components/LoadingError/Error';
 import Loading from '../components/LoadingError/Loading';
 import Toast from '../components/LoadingError/Toast';
 
-const Login = ({ history, redirect }) => {
+const Login = ({ history }) => {
 
     window.scrollTo(0, 0);
 
@@ -18,7 +18,7 @@ const Login = ({ history, redirect }) => {
     const { error, loading, userInfo } = userLogin;
 
     useEffect(() => {
-        if (userInfo) {
+        if (userInfo && userInfo.isAdmin) {
             history.push("/")
         }
     }, [userInfo, history])

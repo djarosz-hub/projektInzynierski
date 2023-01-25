@@ -65,12 +65,8 @@ const ProfileTabs = () => {
             }
             return;
         }
-
+        
         dispatch(updateProfile({ name, password }))
-        // if (!toast.isActive(toastId.current)) {
-        //     toastId.current = toast.success("Profile updated successfully", ToastObjects);
-
-        // }
     };
 
     return (

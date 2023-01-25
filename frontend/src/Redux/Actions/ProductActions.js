@@ -3,16 +3,10 @@ import axios from "axios";
 import { logout } from './UserActions';
 
 export const listProduct = () => async (dispatch) => {
-// export const listProduct = (keyword = " ", pageNumber = " ") => async (dispatch) => {
     try {
-        console.log('try list')
         dispatch({ type: PRODUCT_LIST_REQUEST });
-        
         const { data } = await axios.get(`/api/products`);
-        // const { data } = await axios.get(`/api/products?keyword=${keyword}&pageNumber=${pageNumber}`);
-
         dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
-
     } catch (error) {
         dispatch({
             type: PRODUCT_LIST_FAIL,
@@ -26,8 +20,6 @@ export const listProductDetails = (id) => async (dispatch) => {
         dispatch({ type: PRODUCT_DETAILS_REQUEST });
         const { data } = await axios.get(`/api/products/${id}`);
         dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
-        console.log('data in details action')
-        console.log(data)
     } catch (error) {
         dispatch({
             type: PRODUCT_DETAILS_FAIL,

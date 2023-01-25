@@ -13,7 +13,6 @@ const CategoriesTable = () => {
     const { loading, error, categories } = categoryList;
 
     useEffect(() => {
-        // console.log(categories)
         dispatch(listCategories());
     }, [dispatch]);
 

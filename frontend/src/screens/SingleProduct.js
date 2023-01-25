@@ -67,7 +67,7 @@ const SingleProduct = ({ match }) => {
             dispatch(createProductReview(productId, { rating, comment }))
         }
     }
-    // console.log(product)
+
     return (
         <>
             <Header />
@@ -81,10 +81,6 @@ const SingleProduct = ({ match }) => {
                         <>
                             <div className="row">
                                 <div className="col-md-6">
-                                    {/* <div className="single-image"> */}
-                                    {/* {console.log(product)} */}
-                                    {/* <img src={mainImage} alt={product.name} /> */}
-                                    {/* </div> */}
                                     <ImageSlider images={product.images} name={product.name}/>
                                 </div>
                                 <div className="col-md-6">

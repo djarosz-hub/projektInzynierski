@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Rating from "./Rating";
-// import Pagination from "./pagination";
 import { useDispatch, useSelector } from "react-redux";
 import { listProduct } from './../../Redux/Actions/ProductActions';
 import Loading from "../LoadingError/Loading";
@@ -12,27 +11,21 @@ import { listCategories } from "../../Redux/Actions/CategoryActions";
 
 const ShopSection = () => {
 
-    // const { keyword, pageNumber } = props;
     const [filterValue, setFilterValue] = useState('');
     const [currentPage, setCurrentPage] = useState(0);
     const [categoryFilter, setCategoryFilter] = useState("");
 
     const pageSize = 9;
-    //for future implementation
-    // const [categoryId, setCategoryId] = useState('');
 
     const dispatch = useDispatch();
 
     const productList = useSelector((state) => state.productList);
-    // const { loading, error, products, page, pages } = productList;
     const { loading, error, products } = productList;
 
     const categoryList = useSelector((state) => state.categoryList);
     const { loading: loadingCategories, error: errorCategories, categories } = categoryList;
 
     const filterHandler = (product) => {
-        console.log('category filter: ' + categoryFilter)
-        console.log('keyword filter: ' + filterValue);
 
         if (categoryFilter) {
             if (product.categoryId !== categoryFilter) {
@@ -41,39 +34,28 @@ const ShopSection = () => {
         }
 
         if (filterValue) {
-            // console.log('filvalue: ' + filterValue)
             const filter = filterValue.trim().toLowerCase();
             const nameIncludes = product.name.toLowerCase().includes(filter) ? true : false;
             const descriptionIncludes = product.description.toLowerCase().includes(filter) ? true : false;
-            // console.log('nameIncludes:' + nameIncludes)
-            // console.log('descriptionIncludes: ' + descriptionIncludes)
+
             const result = nameIncludes ? nameIncludes : descriptionIncludes;
             return result;
         }
-
+        
         return true;
     }
 
     const filteredProducts = products && products?.filter(product => filterHandler(product));
 
-    console.log('filtered:')
-    console.log(filteredProducts)
     useEffect(() => {
         dispatch(listProduct());
         dispatch(listCategories());
-        // dispatch(listProduct(keyword, pageNumber))
     }, [dispatch])
-    // }, [dispatch, keyword, pageNumber])
-    // console.log(products)
 
     const handlePageClick = (data) => {
         const selectedPage = data.selected; // actual value, not label so for first page value is 0
-        // console.log(selectedPage)
         setCurrentPage(selectedPage);
-
         window.scrollTo(0, 0);
-
-        // props.setCurrentPage(selected * 10)
     };
 
     const handleKeywordFilter = (keyword) => {
@@ -101,13 +83,12 @@ const ShopSection = () => {
                     }
                 </div>
                 <div className="col-12 d-flex align-items-center padded top-margin">
-                    {/* <label className="form-label">Category</label> */}
                     {errorCategories && <Message variant="alert-danger">{errorCategories}</Message>}
                     {loadingCategories && <Loading />}
                     {
                         categories && categories.length && (
                             <select value={categoryFilter} onChange={(e) => handleCategoryFilter(e.target.value)} className="col-12 bg-light p-3 mt-2 border-0 rounded">
-                                <option value="">Filter by category...</option>
+                                <option value="">All categories</option>
                                 {
                                     categories?.length && (
                                         categories.map((cat, index) => (

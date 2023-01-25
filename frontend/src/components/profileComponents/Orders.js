@@ -45,15 +45,13 @@ const Orders = (props) => {
                                             {
                                                 orders.map((order, index) => (
                                                     <tr className={`${order.isCancelled ? "alert-cancelled" : order.isPaid ? "alert-success" : "alert-danger"}`} key={order._id}>
-                                                        {/* <tr className={`${order.isPaid ? "alert-success" : "alert-danger"}`} key={order._id}> */}
                                                         <td>
                                                             <a href={`/order/${order._id}`} className="link">
                                                                 {index + 1}
                                                             </a>
                                                         </td>
                                                         <td>{order.isCancelled ? <>Cancelled</> : order.isPaid ? <>Paid</> : <>Not paid</>}</td>
-                                                        {/* <td>{order.isPaid ? <>Paid</> : <>Not paid</>}</td> */}
-                                                        <td>{moment(order.createdAt).format('HH:MM DD/MM/YYYY')}</td>
+                                                        <td>{moment(order.createdAt).format('hh:mm DD/MM/YYYY')}</td>
                                                         <td>${(order.totalPrice).toFixed(2)}</td>
                                                     </tr>
                                                 ))

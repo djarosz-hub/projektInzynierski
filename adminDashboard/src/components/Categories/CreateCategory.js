@@ -44,8 +44,6 @@ const CreateCategory = () => {
 
     const submitHandler = (e) => {
         e.preventDefault();
-        console.log('sub')
-
         if ((!name || name.trim() === "") ||
             (!description || description.trim() === "")) {
 

@@ -13,8 +13,7 @@ export const validateOrderItemsAvailability = (items) => async (dispatch) => {
             name: item.name
         }
     }
-    // console.log(orderItemsCountObj['63a8d7c8a52bc205f3dbaf89'].name)
-    // return;
+
     try {
         dispatch({ type: ORDER_COUNTCHECK_REQUEST });
         const { data } = await axios.post("/api/products/productCount", { productIds });
@@ -49,7 +48,6 @@ export const validateOrderItemsAvailability = (items) => async (dispatch) => {
 };
 
 export const createOrder = (order) => async (dispatch) => {
-    // console.log('createorder fired');
     try {
         dispatch({ type: ORDER_CREATE_REQUEST });
 
@@ -70,8 +68,7 @@ export const createOrder = (order) => async (dispatch) => {
     }
 };
 
-export const getOrderDetails = (id) => async (dispatch, getState) => {
-    console.log('getting details')
+export const getOrderDetails = (id) => async (dispatch) => {
     try {
 
         dispatch({ type: ORDER_DETAILS_REQUEST });

@@ -25,25 +25,14 @@ export const getInitialUserData = () => {
     return async dispatch => {
         try {
             dispatch({ type: USER_LOGIN_REQUEST });
-
-            // dispatch({ type: USER_INITIAL_DATA_REQUEST })
             const { data } = await axios.get(`/api/users/initialUserData`);
-            console.log('data in action: ')
-            console.log(data);
             if (!data) {
                 throw new Error();
             }
-            // dispatch(testfunc(data))
-            // dispatch({
-            //     type: USER_INITIAL_DATA_SUCCESS,
-            //     payload: data
-            // })
             dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
         }
         catch (e) {
-            console.log(e)
-            dispatch({ type: USER_LOGIN_FAIL })
-            // dispatch({ type: USER_INITIAL_DATA_FAIL })
+            dispatch({ type: USER_LOGIN_FAIL });
         }
     }
 };
@@ -62,39 +51,19 @@ export const login = (email, password) => async (dispatch) => {
 };
 
 export const logout = () => (dispatch) => {
-
-    console.log('logout fired')
     dispatch({ type: USER_LOGOUT });
     dispatch({ type: USER_DETAILS_RESET });
     dispatch({ type: ORDER_USER_LIST_RESET });
     dispatch({ type: USER_REGISTER_RESET });
     fetch(`/api/users/logout`);
-    // window.location.assign('/login');
-    // document.location.href = "/login";
-    //chyba sam router robi robote
-
 };
 
 export const getUserDetails = () => async (dispatch, getState) => {
     try {
         dispatch({ type: USER_DETAILS_REQUEST });
-        // const {
-        //     userLogin: { userInfo },
-        // } = getState();
-
-        // const config = {
-        //     headers: {
-        //         Authorization: `Bearer ${userInfo.token}`
-        //     }
-        // }
-        // console.log('user details before')
         const { data } = await axios.get(`/api/users/profile`);
-        // throw new Error()
         dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
-        // console.log('user details after')
-
     } catch (error) {
-        // console.log('user details error')
         dispatch(logout())
     }
 };

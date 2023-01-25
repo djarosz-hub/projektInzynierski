@@ -9,9 +9,6 @@ export const listProducts = () => async (dispatch) => {
         dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        // if (error.response && error.response.status === 401) {
-        //     dispatch(logout());
-        // }
         dispatch({
             type: PRODUCT_LIST_FAIL,
             payload: message,

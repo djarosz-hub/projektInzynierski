@@ -9,18 +9,25 @@ export const getInitialUserData = () => {
         try {
             dispatch({ type: USER_LOGIN_REQUEST });
             const { data } = await axios.get(`/api/users/initialUserData`);
-            console.log('data in initial action: ')
-            console.log(data);
-            if (!data) {
+            
+            if (!data || (data && !data.isAdmin)) {
                 throw new Error();
             }
             dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
         }
         catch (e) {
-            console.log(e)
             dispatch({ type: USER_LOGIN_FAIL })
         }
     }
+};
+
+export const logout = () => (dispatch) => {
+    dispatch({ type: USER_LOGOUT });
+    dispatch({ type: USER_LIST_RESET });
+    dispatch({ type: PRODUCT_CREATE_RESET });
+    dispatch({ type: PRODUCT_UPDATE_RESET });
+    dispatch({ type: CATEGORY_CREATE_RESET });
+    fetch(`/api/users/logout`);
 };
 
 export const login = (email, password) => async (dispatch) => {
@@ -49,17 +56,6 @@ export const login = (email, password) => async (dispatch) => {
             payload: message,
         });
     }
-};
-
-export const logout = () => (dispatch) => {
-    // localStorage.removeItem("userInfo");
-    dispatch({ type: USER_LOGOUT });
-    dispatch({ type: USER_LIST_RESET });
-    dispatch({ type: PRODUCT_CREATE_RESET });
-    dispatch({ type: PRODUCT_UPDATE_RESET });
-    dispatch({ type: CATEGORY_CREATE_RESET });
-    fetch(`/api/users/logout`);
-    // document.location.href = "/login";
 };
 
 export const listUsers = () => async (dispatch) => {

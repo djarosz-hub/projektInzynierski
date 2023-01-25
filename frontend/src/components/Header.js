@@ -5,9 +5,6 @@ import { logout } from "../Redux/Actions/UserActions";
 
 const Header = () => {
 
-    // const [keyword, setKeyword] = useState("");
-    // let history = useHistory();
-
     const cart = useSelector((state) => state.cart);
     const { cartItems } = cart;
 
@@ -19,16 +16,6 @@ const Header = () => {
     const logoutHandler = () => {
         dispatch(logout());
     };
-
-    // const searchHandler = (e) => {
-    //     e.preventDefault();
-    //     if (keyword.trim()) {
-    //         history.push(`/search/${keyword}`);
-    //     } else {
-    //         history.push("/");
-    //     }
-
-    // };
 
     return (
         <div>
@@ -123,19 +110,6 @@ const Header = () => {
                                         {cartItems.length > 0 ? (<span className="badge">{cartItems.length}</span>) : <></>}
                                     </Link>
                                 </div>
-                                {/* <div className="col-12 d-flex align-items-center">
-                                    <form onSubmit={searchHandler} className="input-group">
-                                        <input
-                                            type="search"
-                                            className="form-control rounded search"
-                                            placeholder="Search"
-                                            onChange={(e) => setKeyword(e.target.value)}
-                                        />
-                                        <button type="submit" className="search-button">
-                                            search
-                                        </button>
-                                    </form>
-                                </div> */}
                             </div>
                         </div>
                     </div>
@@ -148,19 +122,6 @@ const Header = () => {
                                     <img alt="logo" src="/images/logo.png" />
                                 </Link>
                             </div>
-                            {/* <div className="col-md-6 col-8 d-flex align-items-center">
-                                <form onSubmit={searchHandler} className="input-group">
-                                    <input
-                                        type="search"
-                                        className="form-control rounded search"
-                                        placeholder="Search"
-                                        onChange={(e) => setKeyword(e.target.value)}
-                                    />
-                                    <button type="submit" className="search-button">
-                                        search
-                                    </button>
-                                </form>
-                            </div> */}
                             <div className="col-md-3 d-flex align-items-center justify-content-end Login-Register">
 
                                 {

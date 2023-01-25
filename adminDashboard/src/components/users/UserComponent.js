@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { listUsers } from './../../Redux/Actions/UserActions';
 import Loading from '../LoadingError/Loading.js';
@@ -24,8 +23,6 @@ const UserComponent = () => {
     }, [dispatch]);
 
     const filterHandler = (user) => {
-        console.log('keyword filter: ' + filterValue);
-        console.log('typefilter: ' + typeFilter);
 
         if (typeFilter) {
             if (typeFilter === "admin" && !user.isAdmin) {
@@ -37,10 +34,10 @@ const UserComponent = () => {
         }
 
         if (filterValue) {
-            // console.log('filvalue: ' + filterValue)
             const filter = filterValue.trim().toLowerCase();
             const userNameIncludes = user.name.toLowerCase().includes(filter) ? true : false;
             const userEmailIncludes = user.email.toLowerCase().includes(filter) ? true : false;
+
             const result = userNameIncludes ? userNameIncludes : userEmailIncludes;
             return result;
         }
@@ -49,8 +46,7 @@ const UserComponent = () => {
     }
 
     const filteredUsers = users && users?.filter(user => filterHandler(user));
-    console.log(users)
-
+  
     const handlePageClick = (data) => {
         const selectedPage = data.selected; // actual value, not label so for first page value is 0
         setCurrentPage(selectedPage);

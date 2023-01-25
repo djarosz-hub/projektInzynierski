@@ -5,12 +5,10 @@ import { logout } from "../Actions/UserActions";
 export const listOrders = () => async (dispatch) => {
 
     try {
-        console.log('try orders')
         dispatch({ type: ORDER_LIST_REQUEST });
         const { data } = await axios.get(`/api/orders/all`);
         dispatch({ type: ORDER_LIST_SUCCESS, payload: data });
     } catch (error) {
-        console.log(error)
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         if (error.response && error.response.status === 401) {
             dispatch(logout());
@@ -45,8 +43,6 @@ export const markOrderDelivered = (orderId) => async (dispatch) => {
         dispatch({ type: ORDER_DELIVERED_REQUEST });
         await axios.put(`/api/orders/${orderId}/delivered`);
         dispatch({ type: ORDER_DELIVERED_SUCCESS });
-        // dispatch({ type: ORDER_DELIVERED_SUCCESS, payload: data });
-
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         if (error.response && error.response.status === 401) {

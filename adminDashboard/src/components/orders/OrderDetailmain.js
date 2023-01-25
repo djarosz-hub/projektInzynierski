@@ -67,7 +67,7 @@ const OrderDetailmain = (props) => {
                                 <div className="col-lg-6 col-md-6">
                                     <span>
                                         <i className="far fa-calendar-alt mx-2"></i>
-                                        <b className="text-white">Created at: {moment(order.createdAt).format('HH:MM DD/MM/YYYY')}</b>
+                                        <b className="text-white">Created at: {moment(order.createdAt).format('hh:mm DD/MM/YYYY')}</b>
                                     </span>
                                     <br />
                                     <small className="text-white mx-3 ">
@@ -77,40 +77,14 @@ const OrderDetailmain = (props) => {
                             </div>
                         </header>
                         <div className="card-body">
-                            {/* Order info */}
                             <OrderDetailInfo order={order} />
-
                             <div className="row">
                                 <div className="col-lg-9">
                                     <div className="table-responsive">
                                         <OrderDetailProducts order={order} loading={loading} />
                                     </div>
                                 </div>
-                                {/* Delivery and cancellation info */}
                                 <div className="col-lg-3">
-                                    {/* <div className="box shadow-sm bg-light">
-                                        {
-                                            order.isDelivered ? (
-                                                <>
-                                                    {
-                                                        loadingDelivered && <Loading />
-                                                    }
-                                                    <button onClick={unDeliveredHandler} className="btn btn-success col-12">
-                                                        Delivered at {" "} {moment(order.deliveredAt).format('DD/MM/YYYY')}
-                                                    </button>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    {
-                                                        loadingDelivered && <Loading />
-                                                    }
-                                                    <button onClick={deliveredHandler} className="btn btn-dark col-12">
-                                                        MARK AS DELIVERED
-                                                    </button>
-                                                </>
-                                            )
-                                        }
-                                    </div> */}
                                     {
                                         order.isDelivered && (
                                             <div className="box shadow-sm bg-light top-space">

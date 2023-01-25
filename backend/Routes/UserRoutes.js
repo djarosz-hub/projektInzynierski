@@ -9,14 +9,11 @@ const userRoute = express.Router();
 
 //COMMON ROUTES
 userRoute.get("/initialUserData", asyncHandler(async (req, res) => {
-    console.log('initial')
     if (req.session && req.session.token) {
-        console.log('has session and token')
         try {
             const token = req.session.token;
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            console.log('decoded:')
-            console.log(decoded)
+
             const user = await User.findById(decoded.id);
             if (user) {
                 res.status(200).json({
@@ -30,11 +27,9 @@ userRoute.get("/initialUserData", asyncHandler(async (req, res) => {
                 res.status(404).json({});
             }
         } catch (e) {
-            console.log(`error initialUserData: ` + e);
             res.status(403).json({});
         }
     } else {
-        console.log('empty req')
         res.status(204).json({});
     }
 })
@@ -90,9 +85,9 @@ userRoute.post("/", asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error("Invalid data.");
     }
-    console.log(name + ' ' + email + ' ' + password)
+
     const userExists = await User.findOne({ email });
-    console.log('after')
+
     if (userExists || (!name || !email || !password)) {
         res.status(400);
         throw new Error("User already exists or data is invalid.");
@@ -144,12 +139,9 @@ userRoute.get("/profile", protect, asyncHandler(async (req, res) => {
 
 userRoute.put("/profile", protect, asyncHandler(async (req, res) => {
     const userId = req.user._id;
-    // const userId = 'dupa';
     const { name, password } = req.body;
-    console.log(name + ' ' + password + ' ' + userId);
-    // const requestUserId = '';
+
     if (!userId) {
-        console.log('no id')
         res.status(404);
         throw new Error("Invalid data.");
     }
@@ -157,7 +149,6 @@ userRoute.put("/profile", protect, asyncHandler(async (req, res) => {
     try {
         user = await User.findById(userId);
     } catch (error) {
-        console.log('error finding user')
         res.status(404);
         throw new Error("User not found.");
     }
@@ -175,8 +166,6 @@ userRoute.put("/profile", protect, asyncHandler(async (req, res) => {
             createdAt: updatedUser.createdAt
         })
     } else {
-        console.log('error after user')
-
         res.status(404);
         throw new Error("User not found.");
     }

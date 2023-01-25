@@ -31,7 +31,6 @@ productRoute.delete("/:id", protect, adminAccess, asyncHandler(async (req, res) 
 }));
 
 productRoute.post("/", protect, adminAccess, asyncHandler(async (req, res) => {
-    // console.log(req.body.product)
     const { name, price, description, images: imagesString, countInStock, category: categoryId } = req.body.product;
     if (!name || (!price || price < 0) || !description || !imagesString || countInStock < 0 || !categoryId) {
         res.status(400);
@@ -139,10 +138,8 @@ productRoute.put("/:id", protect, adminAccess, asyncHandler(async (req, res) => 
 //COMMON ROUTES
 
 productRoute.get("/", asyncHandler(async (req, res) => {
-    console.log('all products get')
     try {
         const products = await Product.find({}).sort({ name: 1 }).collation({ locale: "en", caseLevel: true });
-        console.log(products)
         res.status(200).json(products);
     } catch (e) {
         res.status(500);
@@ -176,11 +173,8 @@ productRoute.post("/productCount", protect, asyncHandler(async (req, res) => {
 
 
 productRoute.get("/:id", asyncHandler(async (req, res) => {
-    // console.log('test')
     try {
         const product = await Product.findById(req.params.id);
-        // console.log('after')
-        console.log(product)
         if (product) {
             res.status(200).json(product);
         } else {
@@ -195,30 +189,6 @@ productRoute.get("/:id", asyncHandler(async (req, res) => {
 //COMMON ROUTES END
 
 //USER ROUTES
-
-// productRoute.get("/", asyncHandler(async (req, res) => {
-
-//     const pageSize = 3;
-//     const page = Number(req.query.pageNumber) || 1;
-
-//     //todo
-//     const keyword = req.query.keyword ? {
-//         name: {
-//             $regex: req.query.keyword,
-//             $options: "i"
-//         }
-//     } : {};
-
-//     try {
-//         const count = await Product.countDocuments({ ...keyword });
-//         const products = await Product.find({ ...keyword }).limit(pageSize).skip(pageSize * (page - 1)).sort({ name: 1 }).collation({ locale: "en", caseLevel: true });
-
-//         res.json({ products, page, pages: Math.ceil(count / pageSize) });
-//     } catch (e) {
-//         throw new Error('Error loading products.');
-//     }
-// }));
-
 productRoute.post("/:id/review", protect, asyncHandler(async (req, res) => {
 
     const { rating, comment } = req.body;
