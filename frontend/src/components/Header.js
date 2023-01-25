@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from "../Redux/Actions/UserActions";
 
 const Header = () => {
 
-    const [keyword, setKeyword] = useState("");
-    let history = useHistory();
+    // const [keyword, setKeyword] = useState("");
+    // let history = useHistory();
 
     const cart = useSelector((state) => state.cart);
     const { cartItems } = cart;
@@ -20,15 +20,15 @@ const Header = () => {
         dispatch(logout());
     };
 
-    const searchHandler = (e) => {
-        e.preventDefault();
-        if (keyword.trim()) {
-            history.push(`/search/${keyword}`);
-        } else {
-            history.push("/");
-        }
+    // const searchHandler = (e) => {
+    //     e.preventDefault();
+    //     if (keyword.trim()) {
+    //         history.push(`/search/${keyword}`);
+    //     } else {
+    //         history.push("/");
+    //     }
 
-    };
+    // };
 
     return (
         <div>
@@ -123,7 +123,7 @@ const Header = () => {
                                         {cartItems.length > 0 ? (<span className="badge">{cartItems.length}</span>) : <></>}
                                     </Link>
                                 </div>
-                                <div className="col-12 d-flex align-items-center">
+                                {/* <div className="col-12 d-flex align-items-center">
                                     <form onSubmit={searchHandler} className="input-group">
                                         <input
                                             type="search"
@@ -135,20 +135,20 @@ const Header = () => {
                                             search
                                         </button>
                                     </form>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>
 
                     {/* PC HEADER */}
                     <div className="pc-header">
-                        <div className="row">
+                        <div className="row spaced-items">
                             <div className="col-md-3 col-4 d-flex align-items-center">
                                 <Link className="navbar-brand" to="/">
                                     <img alt="logo" src="/images/logo.png" />
                                 </Link>
                             </div>
-                            <div className="col-md-6 col-8 d-flex align-items-center">
+                            {/* <div className="col-md-6 col-8 d-flex align-items-center">
                                 <form onSubmit={searchHandler} className="input-group">
                                     <input
                                         type="search"
@@ -160,7 +160,7 @@ const Header = () => {
                                         search
                                     </button>
                                 </form>
-                            </div>
+                            </div> */}
                             <div className="col-md-3 d-flex align-items-center justify-content-end Login-Register">
 
                                 {

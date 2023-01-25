@@ -5,13 +5,13 @@ import { logout } from "./UserActions";
 export const listProducts = () => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_LIST_REQUEST });
-        const { data } = await axios.get(`/api/products/all`);
+        const { data } = await axios.get(`/api/products`);
         dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        if (error.response && error.response.status === 401) {
-            dispatch(logout());
-        }
+        // if (error.response && error.response.status === 401) {
+        //     dispatch(logout());
+        // }
         dispatch({
             type: PRODUCT_LIST_FAIL,
             payload: message,

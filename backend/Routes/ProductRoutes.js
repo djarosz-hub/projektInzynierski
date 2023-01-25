@@ -7,16 +7,6 @@ import protect, { adminAccess } from './../Middleware/Auth.js';
 const productRoute = express.Router();
 
 //ADMIN ROUTES
-productRoute.get("/all", protect, adminAccess, asyncHandler(async (req, res) => {
-    console.log('all products get')
-    try {
-        const products = await Product.find({}).sort({ name: 1 }).collation({ locale: "en", caseLevel: true });
-        res.status(200).json(products);
-    } catch (e) {
-        res.status(500);
-        throw new Error("Products loading error");
-    }
-}));
 
 productRoute.delete("/:id", protect, adminAccess, asyncHandler(async (req, res) => {
 
@@ -148,6 +138,18 @@ productRoute.put("/:id", protect, adminAccess, asyncHandler(async (req, res) => 
 
 //COMMON ROUTES
 
+productRoute.get("/", asyncHandler(async (req, res) => {
+    console.log('all products get')
+    try {
+        const products = await Product.find({}).sort({ name: 1 }).collation({ locale: "en", caseLevel: true });
+        console.log(products)
+        res.status(200).json(products);
+    } catch (e) {
+        res.status(500);
+        throw new Error("Products loading error");
+    }
+}));
+
 productRoute.post("/productCount", protect, asyncHandler(async (req, res) => {
     const { productIds } = req.body;
 
@@ -193,28 +195,29 @@ productRoute.get("/:id", asyncHandler(async (req, res) => {
 //COMMON ROUTES END
 
 //USER ROUTES
-productRoute.get("/", asyncHandler(async (req, res) => {
 
-    const pageSize = 3;
-    const page = Number(req.query.pageNumber) || 1;
+// productRoute.get("/", asyncHandler(async (req, res) => {
 
-    //todo
-    const keyword = req.query.keyword ? {
-        name: {
-            $regex: req.query.keyword,
-            $options: "i"
-        }
-    } : {};
+//     const pageSize = 3;
+//     const page = Number(req.query.pageNumber) || 1;
 
-    try {
-        const count = await Product.countDocuments({ ...keyword });
-        const products = await Product.find({ ...keyword }).limit(pageSize).skip(pageSize * (page - 1)).sort({ name: 1 }).collation({ locale: "en", caseLevel: true });
+//     //todo
+//     const keyword = req.query.keyword ? {
+//         name: {
+//             $regex: req.query.keyword,
+//             $options: "i"
+//         }
+//     } : {};
 
-        res.json({ products, page, pages: Math.ceil(count / pageSize) });
-    } catch (e) {
-        throw new Error('Error loading products.');
-    }
-}));
+//     try {
+//         const count = await Product.countDocuments({ ...keyword });
+//         const products = await Product.find({ ...keyword }).limit(pageSize).skip(pageSize * (page - 1)).sort({ name: 1 }).collation({ locale: "en", caseLevel: true });
+
+//         res.json({ products, page, pages: Math.ceil(count / pageSize) });
+//     } catch (e) {
+//         throw new Error('Error loading products.');
+//     }
+// }));
 
 productRoute.post("/:id/review", protect, asyncHandler(async (req, res) => {
 

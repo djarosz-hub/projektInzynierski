@@ -21,9 +21,9 @@ const App = () => {
         <Router>
             <Switch>
                 <Route path="/" component={HomeScreen} exact />
-                <Route path="/search/:keyword" component={HomeScreen} exact />
-                <Route path="/page/:pageNumber" component={HomeScreen} exact />
-                <Route path="/search/:keyword/page/:pageNumber" component={HomeScreen} exact />
+                {/* <Route path="/search/:keyword" component={HomeScreen} exact /> */}
+                {/* <Route path="/page/:pageNumber" component={HomeScreen} exact /> */}
+                {/* <Route path="/search/:keyword/page/:pageNumber" component={HomeScreen} exact /> */}
                 <Route path="/products/:id" component={SingleProduct} />
                 <Route path="/login" component={Login} />
                 <Route path="/register" component={Register} />
