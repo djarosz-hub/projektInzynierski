@@ -4,7 +4,7 @@ import moment from 'moment';
 
 const Orders = (props) => {
 
-    const { orders } = props;
+    const { orders, pageSize, currentPage } = props;
     let history = useHistory();
 
     const showOrderHandler = (orderId) => {
@@ -24,8 +24,8 @@ const Orders = (props) => {
             </thead>
             <tbody>
                 {
-                    orders.map((order) => (
-                        <tr key={order._id} onClick={() => showOrderHandler(order._id)}>
+                    orders.length && orders.slice(currentPage * pageSize, (currentPage + 1) * pageSize).map((order) => (
+                        <tr key={order._id} onClick={() => showOrderHandler(order._id)} className={order.isCancelled ? "cancelled-order" : ""}>
                             <td>
                                 <b>{order.user.name}</b>
                             </td>

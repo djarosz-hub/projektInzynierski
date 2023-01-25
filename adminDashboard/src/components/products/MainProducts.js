@@ -72,6 +72,15 @@ const MainProducts = () => {
         // props.setCurrentPage(selected * 10)
     };
 
+    const handleKeywordFilter = (keyword) => {
+        setFilterValue(keyword);
+        setCurrentPage(0);
+    }
+    const handleCategoryFilter = (category) => {
+        setCategoryFilter(category)
+        setCurrentPage(0);
+    }
+
     return (
         <section className="content-main">
             <div className="content-header">
@@ -91,7 +100,7 @@ const MainProducts = () => {
                                 type="search"
                                 className="form-control p-2"
                                 placeholder="Filter items by name or description..."
-                                onChange={(e) => setFilterValue(e.target.value)}
+                                onChange={(e) => handleKeywordFilter(e.target.value)}
                             />
                         </div>
                         {loadingCategories && <Loading />}
@@ -99,7 +108,7 @@ const MainProducts = () => {
                         {
                             categories && categories?.length && (
                                 <div className="col-lg-2 col-6 col-md-3">
-                                    <select className="form-select" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+                                    <select className="form-select" value={categoryFilter} onChange={(e) => handleCategoryFilter(e.target.value)}>
                                         <option value="">All categories</option>
                                         {
                                             categories.map((cat, index) => (
@@ -149,7 +158,7 @@ const MainProducts = () => {
                                 marginPagesDisplayed={2}
                                 pageRangeDisplayed={5}
                                 initialPage={0}
-                                forcePage={0}
+                                forcePage={currentPage}
                                 onPageChange={handlePageClick}
                                 containerClassName={'pagination'}
                                 activeClassName={'active-page'}

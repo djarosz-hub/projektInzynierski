@@ -934,3 +934,7 @@ ul.row-sm {
     display:flex;
     justify-content: center;
 }
+
+.cancelled-order {
+    background-color: #adb5bd;
+}

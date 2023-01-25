@@ -76,6 +76,15 @@ const ShopSection = () => {
         // props.setCurrentPage(selected * 10)
     };
 
+    const handleKeywordFilter = (keyword) => {
+        setFilterValue(keyword);
+        setCurrentPage(0);
+    }
+    const handleCategoryFilter = (category) => {
+        setCategoryFilter(category)
+        setCurrentPage(0);
+    }
+
     return (
         <>
             <div className="container">
@@ -86,7 +95,7 @@ const ShopSection = () => {
                                 type="search"
                                 className="form-control rounded search"
                                 placeholder="Filter items by name or description..."
-                                onChange={(e) => setFilterValue(e.target.value)}
+                                onChange={(e) => handleKeywordFilter(e.target.value)}
                             />
                         )
                     }
@@ -97,7 +106,7 @@ const ShopSection = () => {
                     {loadingCategories && <Loading />}
                     {
                         categories && categories.length && (
-                            <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="col-12 bg-light p-3 mt-2 border-0 rounded">
+                            <select value={categoryFilter} onChange={(e) => handleCategoryFilter(e.target.value)} className="col-12 bg-light p-3 mt-2 border-0 rounded">
                                 <option value="">Filter by category...</option>
                                 {
                                     categories?.length && (
@@ -166,7 +175,7 @@ const ShopSection = () => {
                                             marginPagesDisplayed={2}
                                             pageRangeDisplayed={5}
                                             initialPage={0}
-                                            forcePage={0}
+                                            forcePage={currentPage}
                                             onPageChange={handlePageClick}
                                             containerClassName={'pagination'}
                                             activeClassName={'active-page'}

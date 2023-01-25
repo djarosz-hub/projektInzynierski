@@ -1,12 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { listUsers } from './../../Redux/Actions/UserActions';
 import Loading from '../LoadingError/Loading.js';
 import Message from '../LoadingError/Error.js';
+import ReactPaginate from "react-paginate";
 
 
 const UserComponent = () => {
+
+    const [filterValue, setFilterValue] = useState("");
+    const [typeFilter, setTypeFilter] = useState("");
+    const [currentPage, setCurrentPage] = useState(0);
+
+    const pageSize = 10;
 
     const dispatch = useDispatch();
     const userList = useSelector((state) => state.userList);
@@ -16,10 +23,55 @@ const UserComponent = () => {
         dispatch(listUsers());
     }, [dispatch]);
 
+    const filterHandler = (user) => {
+        console.log('keyword filter: ' + filterValue);
+        console.log('typefilter: ' + typeFilter);
+
+        if (typeFilter) {
+            if (typeFilter === "admin" && !user.isAdmin) {
+                return false;
+            }
+            if (typeFilter === "user" && user.isAdmin) {
+                return false;
+            }
+        }
+
+        if (filterValue) {
+            // console.log('filvalue: ' + filterValue)
+            const filter = filterValue.trim().toLowerCase();
+            const userNameIncludes = user.name.toLowerCase().includes(filter) ? true : false;
+            const userEmailIncludes = user.email.toLowerCase().includes(filter) ? true : false;
+            const result = userNameIncludes ? userNameIncludes : userEmailIncludes;
+            return result;
+        }
+
+        return true;
+    }
+
+    const filteredUsers = users && users?.filter(user => filterHandler(user));
+    console.log(users)
+
+    const handlePageClick = (data) => {
+        const selectedPage = data.selected; // actual value, not label so for first page value is 0
+        setCurrentPage(selectedPage);
+        window.scrollTo(0, 0);
+    };
+
+    const handleKeywordFilter = (keyword) => {
+        setFilterValue(keyword);
+        setCurrentPage(0);
+    }
+
+    const handleTypeFilter = (type) => {
+        setTypeFilter(type)
+        setCurrentPage(0);
+    }
+
     return (
         <section className="content-main">
             <div className="content-header">
                 <h2 className="content-title">Customers</h2>
+                {/* for future implementation */}
                 {/* <div>
                     <Link to="#" className="btn btn-primary">
                         <i className="material-icons md-plus"></i> Create new
@@ -33,23 +85,18 @@ const UserComponent = () => {
                         <div className="col-lg-4 col-md-6 me-auto">
                             <input
                                 type="text"
-                                placeholder="Search..."
+                                placeholder="Filter by user name or email..."
                                 className="form-control"
+                                value={filterValue}
+                                onChange={(e) => handleKeywordFilter(e.target.value)}
                             />
                         </div>
+
                         <div className="col-lg-2 col-6 col-md-3">
-                            <select className="form-select">
-                                <option>Show 20</option>
-                                <option>Show 30</option>
-                                <option>Show 40</option>
-                                <option>Show all</option>
-                            </select>
-                        </div>
-                        <div className="col-lg-2 col-6 col-md-3">
-                            <select className="form-select">
-                                <option>Status: all</option>
-                                <option>Active only</option>
-                                <option>Disabled</option>
+                            <select className="form-select" value={typeFilter} onChange={(e) => handleTypeFilter(e.target.value)}>
+                                <option value="">Type: all</option>
+                                <option value="admin">Admin</option>
+                                <option value="user">User</option>
                             </select>
                         </div>
                     </div>
@@ -64,7 +111,7 @@ const UserComponent = () => {
                         ) : (
                             <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4">
                                 {
-                                    users.map((user) => (
+                                    filteredUsers.length && filteredUsers.slice(currentPage * pageSize, (currentPage + 1) * pageSize).map((user) => (
                                         <div className="col" key={user._id}>
                                             <div className="card card-user shadow-sm">
                                                 <div className="card-header">
@@ -90,27 +137,29 @@ const UserComponent = () => {
                             </div>
                         )
                     }
+                    {
+                        filteredUsers && filteredUsers.length > 0 && (
+                            <ReactPaginate
+                                previousLabel={'PREVIOUS'}
+                                nextLabel={'NEXT'}
+                                breakLabel={'...'}
+                                breakClassName={'break-me'}
+                                pageCount={Math.ceil(filteredUsers?.length / pageSize)}
+                                marginPagesDisplayed={2}
+                                pageRangeDisplayed={5}
+                                initialPage={0}
+                                forcePage={currentPage}
+                                onPageChange={handlePageClick}
+                                containerClassName={'pagination'}
+                                activeClassName={'active-page'}
+                            />)
+                    }
+                    {
+                        !loading && filteredUsers.length === 0 && (
+                            <div className="centered">No items matching this criteria - choose another filter.</div>
+                        )
+                    }
 
-                    {/* TODO */}
-                    <nav className="float-end mt-4" aria-label="Page navigation">
-                        <ul className="pagination">
-                            <li className="page-item disabled">
-                                <Link className="page-link" to="#">
-                                    Previous
-                                </Link>
-                            </li>
-                            <li className="page-item active">
-                                <Link className="page-link" to="#">
-                                    1
-                                </Link>
-                            </li>
-                            <li className="page-item">
-                                <Link className="page-link" to="#">
-                                    Next
-                                </Link>
-                            </li>
-                        </ul>
-                    </nav>
                 </div>
             </div>
         </section>
